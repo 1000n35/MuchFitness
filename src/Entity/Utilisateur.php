@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -40,6 +42,30 @@ class Utilisateur
 
     #[ORM\Column]
     private ?bool $isCoach = null;
+
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Semaine::class)]
+    private Collection $semaines;
+
+    #[ORM\OneToMany(mappedBy: 'createur', targetEntity: Programme::class)]
+    private Collection $programmes;
+
+    #[ORM\OneToMany(mappedBy: 'createur', targetEntity: SeanceType::class)]
+    private Collection $seanceTypes;
+
+    #[ORM\OneToMany(mappedBy: 'createur', targetEntity: Exercice::class)]
+    private Collection $exercices;
+
+    #[ORM\ManyToMany(targetEntity: Programme::class, mappedBy: 'estFavori')]
+    private Collection $progFavoris;
+
+    public function __construct()
+    {
+        $this->semaines = new ArrayCollection();
+        $this->programmes = new ArrayCollection();
+        $this->seanceTypes = new ArrayCollection();
+        $this->exercices = new ArrayCollection();
+        $this->progFavoris = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -150,6 +176,153 @@ class Utilisateur
     public function setIsCoach(bool $isCoach): static
     {
         $this->isCoach = $isCoach;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Semaine>
+     */
+    public function getSemaines(): Collection
+    {
+        return $this->semaines;
+    }
+
+    public function addSemaine(Semaine $semaine): static
+    {
+        if (!$this->semaines->contains($semaine)) {
+            $this->semaines->add($semaine);
+            $semaine->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSemaine(Semaine $semaine): static
+    {
+        if ($this->semaines->removeElement($semaine)) {
+            // set the owning side to null (unless already changed)
+            if ($semaine->getUtilisateur() === $this) {
+                $semaine->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Programme>
+     */
+    public function getProgrammes(): Collection
+    {
+        return $this->programmes;
+    }
+
+    public function addProgramme(Programme $programme): static
+    {
+        if (!$this->programmes->contains($programme)) {
+            $this->programmes->add($programme);
+            $programme->setCreateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProgramme(Programme $programme): static
+    {
+        if ($this->programmes->removeElement($programme)) {
+            // set the owning side to null (unless already changed)
+            if ($programme->getCreateur() === $this) {
+                $programme->setCreateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SeanceType>
+     */
+    public function getSeanceTypes(): Collection
+    {
+        return $this->seanceTypes;
+    }
+
+    public function addSeanceType(SeanceType $seanceType): static
+    {
+        if (!$this->seanceTypes->contains($seanceType)) {
+            $this->seanceTypes->add($seanceType);
+            $seanceType->setCreateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeanceType(SeanceType $seanceType): static
+    {
+        if ($this->seanceTypes->removeElement($seanceType)) {
+            // set the owning side to null (unless already changed)
+            if ($seanceType->getCreateur() === $this) {
+                $seanceType->setCreateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Exercice>
+     */
+    public function getExercices(): Collection
+    {
+        return $this->exercices;
+    }
+
+    public function addExercice(Exercice $exercice): static
+    {
+        if (!$this->exercices->contains($exercice)) {
+            $this->exercices->add($exercice);
+            $exercice->setCreateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExercice(Exercice $exercice): static
+    {
+        if ($this->exercices->removeElement($exercice)) {
+            // set the owning side to null (unless already changed)
+            if ($exercice->getCreateur() === $this) {
+                $exercice->setCreateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Programme>
+     */
+    public function getProgFavoris(): Collection
+    {
+        return $this->progFavoris;
+    }
+
+    public function addProgFavori(Programme $progFavori): static
+    {
+        if (!$this->progFavoris->contains($progFavori)) {
+            $this->progFavoris->add($progFavori);
+            $progFavori->addEstFavori($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProgFavori(Programme $progFavori): static
+    {
+        if ($this->progFavoris->removeElement($progFavori)) {
+            $progFavori->removeEstFavori($this);
+        }
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProgrammeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +24,26 @@ class Programme
 
     #[ORM\Column(length: 255)]
     private ?string $type = null;
+
+    #[ORM\OneToMany(mappedBy: 'programme', targetEntity: Semaine::class)]
+    private Collection $semaines;
+
+    #[ORM\ManyToOne(inversedBy: 'programmes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $createur = null;
+
+    #[ORM\OneToMany(mappedBy: 'programme', targetEntity: SeanceType::class)]
+    private Collection $seanceTypes;
+
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'progFavoris')]
+    private Collection $estFavori;
+
+    public function __construct()
+    {
+        $this->semaines = new ArrayCollection();
+        $this->seanceTypes = new ArrayCollection();
+        $this->estFavori = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -60,6 +82,102 @@ class Programme
     public function setType(string $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Semaine>
+     */
+    public function getSemaines(): Collection
+    {
+        return $this->semaines;
+    }
+
+    public function addSemaine(Semaine $semaine): static
+    {
+        if (!$this->semaines->contains($semaine)) {
+            $this->semaines->add($semaine);
+            $semaine->setProgramme($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSemaine(Semaine $semaine): static
+    {
+        if ($this->semaines->removeElement($semaine)) {
+            // set the owning side to null (unless already changed)
+            if ($semaine->getProgramme() === $this) {
+                $semaine->setProgramme(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCreateur(): ?Utilisateur
+    {
+        return $this->createur;
+    }
+
+    public function setCreateur(?Utilisateur $createur): static
+    {
+        $this->createur = $createur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SeanceType>
+     */
+    public function getSeanceTypes(): Collection
+    {
+        return $this->seanceTypes;
+    }
+
+    public function addSeanceType(SeanceType $seanceType): static
+    {
+        if (!$this->seanceTypes->contains($seanceType)) {
+            $this->seanceTypes->add($seanceType);
+            $seanceType->setProgramme($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeanceType(SeanceType $seanceType): static
+    {
+        if ($this->seanceTypes->removeElement($seanceType)) {
+            // set the owning side to null (unless already changed)
+            if ($seanceType->getProgramme() === $this) {
+                $seanceType->setProgramme(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getEstFavori(): Collection
+    {
+        return $this->estFavori;
+    }
+
+    public function addEstFavori(Utilisateur $estFavori): static
+    {
+        if (!$this->estFavori->contains($estFavori)) {
+            $this->estFavori->add($estFavori);
+        }
+
+        return $this;
+    }
+
+    public function removeEstFavori(Utilisateur $estFavori): static
+    {
+        $this->estFavori->removeElement($estFavori);
 
         return $this;
     }

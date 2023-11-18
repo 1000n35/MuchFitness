@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SeanceTypeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +27,22 @@ class SeanceType
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $duree = null;
+
+    #[ORM\ManyToOne(inversedBy: 'seanceTypes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Programme $programme = null;
+
+    #[ORM\ManyToOne(inversedBy: 'seanceTypes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Utilisateur $createur = null;
+
+    #[ORM\ManyToMany(targetEntity: Exercice::class, mappedBy: 'contient')]
+    private Collection $exercices;
+
+    public function __construct()
+    {
+        $this->exercices = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -75,6 +93,57 @@ class SeanceType
     public function setDuree(\DateTimeInterface $duree): static
     {
         $this->duree = $duree;
+
+        return $this;
+    }
+
+    public function getProgramme(): ?Programme
+    {
+        return $this->programme;
+    }
+
+    public function setProgramme(?Programme $programme): static
+    {
+        $this->programme = $programme;
+
+        return $this;
+    }
+
+    public function getCreateur(): ?Utilisateur
+    {
+        return $this->createur;
+    }
+
+    public function setCreateur(?Utilisateur $createur): static
+    {
+        $this->createur = $createur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Exercice>
+     */
+    public function getExercices(): Collection
+    {
+        return $this->exercices;
+    }
+
+    public function addExercice(Exercice $exercice): static
+    {
+        if (!$this->exercices->contains($exercice)) {
+            $this->exercices->add($exercice);
+            $exercice->addContient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExercice(Exercice $exercice): static
+    {
+        if ($this->exercices->removeElement($exercice)) {
+            $exercice->removeContient($this);
+        }
 
         return $this;
     }

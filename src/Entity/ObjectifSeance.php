@@ -20,6 +20,10 @@ class ObjectifSeance
     #[ORM\Column(type: Types::TEXT)]
     private ?string $descriptif = null;
 
+    #[ORM\ManyToOne(inversedBy: 'objectifSeances')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Semaine $semaine = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +49,18 @@ class ObjectifSeance
     public function setDescriptif(string $descriptif): static
     {
         $this->descriptif = $descriptif;
+
+        return $this;
+    }
+
+    public function getSemaine(): ?Semaine
+    {
+        return $this->semaine;
+    }
+
+    public function setSemaine(?Semaine $semaine): static
+    {
+        $this->semaine = $semaine;
 
         return $this;
     }
