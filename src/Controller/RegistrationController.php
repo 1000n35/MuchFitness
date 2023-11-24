@@ -19,7 +19,7 @@ class RegistrationController extends AbstractController
         $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isValid() && $form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $doctrine->getManager();
             $em->persist($user);
             $em->flush();
