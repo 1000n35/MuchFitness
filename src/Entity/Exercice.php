@@ -23,7 +23,7 @@ class Exercice
 
     #[ORM\ManyToOne(inversedBy: 'exercices')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $createur = null;
+    private ?User $createur = null;
 
     #[ORM\ManyToMany(targetEntity: SeanceType::class, inversedBy: 'exercices')]
     private Collection $contient;
@@ -62,12 +62,12 @@ class Exercice
         return $this;
     }
 
-    public function getCreateur(): ?Utilisateur
+    public function getCreateur(): ?User
     {
         return $this->createur;
     }
 
-    public function setCreateur(?Utilisateur $createur): static
+    public function setCreateur(?User $createur): static
     {
         $this->createur = $createur;
 

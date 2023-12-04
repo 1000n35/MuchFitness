@@ -30,12 +30,12 @@ class Programme
 
     #[ORM\ManyToOne(inversedBy: 'programmes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $createur = null;
+    private ?User $createur = null;
 
     #[ORM\OneToMany(mappedBy: 'programme', targetEntity: SeanceType::class)]
     private Collection $seanceTypes;
 
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'progFavoris')]
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'progFavoris')]
     private Collection $estFavori;
 
     public function __construct()
@@ -116,12 +116,12 @@ class Programme
         return $this;
     }
 
-    public function getCreateur(): ?Utilisateur
+    public function getCreateur(): ?User
     {
         return $this->createur;
     }
 
-    public function setCreateur(?Utilisateur $createur): static
+    public function setCreateur(?User $createur): static
     {
         $this->createur = $createur;
 
@@ -159,14 +159,14 @@ class Programme
     }
 
     /**
-     * @return Collection<int, Utilisateur>
+     * @return Collection<int, User>
      */
     public function getEstFavori(): Collection
     {
         return $this->estFavori;
     }
 
-    public function addEstFavori(Utilisateur $estFavori): static
+    public function addEstFavori(User $estFavori): static
     {
         if (!$this->estFavori->contains($estFavori)) {
             $this->estFavori->add($estFavori);
@@ -175,7 +175,7 @@ class Programme
         return $this;
     }
 
-    public function removeEstFavori(Utilisateur $estFavori): static
+    public function removeEstFavori(User $estFavori): static
     {
         $this->estFavori->removeElement($estFavori);
 
