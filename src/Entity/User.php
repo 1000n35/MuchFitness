@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -18,28 +17,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
 
-    /**
-     * ! ID ///////////////////////////////////////////////////////////////
-    */
+    // ID
     #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * ! USERNAME /////////////////////////////////////////////////////////
-    */
+    // USERNAME
     #[Assert\NotBlank()]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $username = null;
 
-    /**
-     * ! ROLES ////////////////////////////////////////////////////////////
-    */
+    // ROLES
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * ! MDP //////////////////////////////////////////////////////////////
-     */
+    // MDP
     /**
      * @var string The hashed password
      */
@@ -47,92 +38,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    /**
-     * ! EMAIL ////////////////////////////////////////////////////////////
-     */
+    // EMAIL
     #[Assert\Email()]
     #[Assert\NotBlank()]
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
-    /**
-     * ! NOM //////////////////////////////////////////////////////////////
-     */
+    // NOM
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    /**
-     * ! PRENOM ///////////////////////////////////////////////////////////
-     */
+    // PRENOM
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    /**
-     * ! DATE DE NAISSANCE ////////////////////////////////////////////////
-     */
+    // DATE DE NAISSANCE
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateNaissance = null;
 
-    /**
-     * ! TELEPHONE ////////////////////////////////////////////////////////
-     */
+    // TELEPHONE
     #[ORM\Column(length: 255)]
     private ?string $telephone = null;
 
-    /**
-     * ! POIDS ////////////////////////////////////////////////////////////
-     */
+    // POIDS
     #[ORM\Column]
     private ?float $poids = null;
 
-    /**
-     * ! TAILLE ///////////////////////////////////////////////////////////
-     */
+    // TAILLE
     #[ORM\Column]
     private ?int $taille = null;
 
-    /**
-     * ! METABOLISME //////////////////////////////////////////////////////
-     */
+    // METABOLISME
     #[ORM\Column(length: 255)]
     private ?string $metabolisme = null;
 
-    /**
-     * ! IS COACH /////////////////////////////////////////////////////////
-     */
+    // IS COACH
     #[ORM\Column]
     private ?bool $isCoach = null;
 
-    /**
-     * ! SEMAINES APPARTIENNENT À USER ////////////////////////////////////
-     */
+    // SEMAINES APPARTIENNENT À USER
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Semaine::class)]
     private Collection $semaines;
 
-    /**
-     * ! PROGRAMMES CRÉÉS PAR USER ////////////////////////////////////////
-     */
+    // PROGRAMMES CRÉÉS PAR USER
     #[ORM\OneToMany(mappedBy: 'createur', targetEntity: Programme::class)]
     private Collection $programmes;
 
-    /**
-     * ! SEANCES TYPE CRÉÉS PAR USER //////////////////////////////////////
-     */
+    // SEANCES TYPE CRÉÉS PAR USER
     #[ORM\OneToMany(mappedBy: 'createur', targetEntity: SeanceType::class)]
     private Collection $seanceTypes;
 
-    /**
-     * ! EXERCICES CRÉÉS PAR USER /////////////////////////////////////////
-     */
+    // EXERCICES CRÉÉS PAR USER
     #[ORM\OneToMany(mappedBy: 'createur', targetEntity: Exercice::class)]
     private Collection $exercices;
 
-    /**
-     * ! FAVORIS DE USER //////////////////////////////////////////////////
-     */
+    // FAVORIS DE USER
     #[ORM\ManyToMany(targetEntity: Programme::class, mappedBy: 'estFavori')]
     private Collection $progFavoris;
-
 
 
     public function __construct()
@@ -149,7 +111,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->id;
     }
-
 
     public function getUsername(): ?string
     {
@@ -173,7 +134,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->username;
     }
 
-
     /**
      * @see UserInterface
      */
@@ -192,7 +152,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
 
     /**
      * @see PasswordAuthenticatedUserInterface
@@ -218,7 +177,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-
     public function getEmail(): ?string
     {
         return $this->email;
@@ -227,10 +185,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
-
 
     public function getNom(): ?string
     {
@@ -244,7 +200,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
     public function getPrenom(): ?string
     {
         return $this->prenom;
@@ -256,7 +211,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
 
     public function getDateNaissance(): ?\DateTimeInterface
     {
@@ -270,7 +224,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
     public function getTelephone(): ?string
     {
         return $this->telephone;
@@ -282,7 +235,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
 
     public function getPoids(): ?float
     {
@@ -296,7 +248,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
     public function getTaille(): ?int
     {
         return $this->taille;
@@ -308,7 +259,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
 
     public function getMetabolisme(): ?string
     {
@@ -322,7 +272,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
     public function isIsCoach(): ?bool
     {
         return $this->isCoach;
@@ -335,8 +284,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
-        /**
+    /**
      * @return Collection<int, Semaine>
      */
     public function getSemaines(): Collection
@@ -365,7 +313,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
 
     /**
      * @return Collection<int, Programme>
@@ -397,7 +344,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
     /**
      * @return Collection<int, SeanceType>
      */
@@ -427,7 +373,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
 
     /**
      * @return Collection<int, Exercice>
@@ -459,7 +404,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
     /**
      * @return Collection<int, Programme>
      */
@@ -483,11 +427,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->progFavoris->removeElement($progFavori)) {
             $progFavori->removeEstFavori($this);
         }
-
         return $this;
     }
 
-    
     public function __toString()
     {
         return $this->id.' '.$this->username.' '.$this->email;
