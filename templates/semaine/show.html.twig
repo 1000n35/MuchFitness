@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Semaine{% endblock %}
+
+{% block body %}
+    <h1>Semaine</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ semaine.id }}</td>
+            </tr>
+            <tr>
+                <th>DateDebut</th>
+                <td>{{ semaine.dateDebut ? semaine.dateDebut|date('Y-m-d') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_semaine_index') }}">back to list</a>
+
+    <a href="{{ path('app_semaine_edit', {'id': semaine.id}) }}">edit</a>
+
+    {{ include('semaine/_delete_form.html.twig') }}
+{% endblock %}
