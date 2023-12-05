@@ -2,8 +2,9 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Bonjour Monde!!!!!!{% endblock %}</title>
+        <title>{% block title %}Hello World!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -11,8 +12,45 @@
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
+        <style>
+            body {
+                background-color: lightgray;
+            }
+            
+            header {
+                background-color: #de5200;
+                color: white;
+                padding: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            nav {
+                display: flex;
+                gap: 20px;
+            }
+            
+            nav img {
+                height: 50px;
+            }
+            
+            nav a {
+                color: white;
+                text-decoration: none;
+            }
+        </style>
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <header>
+            <nav>
+                <img href="/home" src="{{ asset('logo.jpg') }}" alt="Logo">
+                <a href="">Home (a suppr)</a>
+                <a href="">Programmes</a>
+                <a href="/login">Connexion</a>
+            </nav>
+        </header> 
+        {% block body %}
+        {% endblock %}
     </body>
 </html>
