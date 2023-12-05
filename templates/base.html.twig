@@ -44,9 +44,15 @@
     <body>
         <header>
             <nav>
-                <a href="/">Accueil</a>
-                <a href="">Programmes</a>
-                <a href="/login">Connexion</a>
+                {% if app.user is null %}
+                    <a href="/">Accueil</a>
+                    <a href="/login">Connexion</a>
+                {% else %}
+                    {#<h3>Username : {{ app.user.getId() }}</h3>#}
+                    <a href="/">Accueil</a>
+                    <a href="">Programmes</a>
+                    <a href="/login">Connexion</a>
+                {% endif %}
             </nav>
         </header> 
         {% block body %}
