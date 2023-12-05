@@ -60,14 +60,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $telephone = null;
 
-    // POIDS
-    #[ORM\Column]
-    private ?float $poids = null;
-
-    // TAILLE
-    #[ORM\Column]
-    private ?int $taille = null;
-
     // IS COACH
     #[ORM\Column]
     private ?bool $isCoach = null;
@@ -228,30 +220,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
-
-        return $this;
-    }
-
-    public function getPoids(): ?float
-    {
-        return $this->poids;
-    }
-
-    public function setPoids(float $poids): static
-    {
-        $this->poids = $poids;
-
-        return $this;
-    }
-
-    public function getTaille(): ?int
-    {
-        return $this->taille;
-    }
-
-    public function setTaille(int $taille): static
-    {
-        $this->taille = $taille;
 
         return $this;
     }

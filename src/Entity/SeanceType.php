@@ -22,7 +22,7 @@ class SeanceType
     #[ORM\Column(length: 255)]
     private ?string $objectif = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $descriptif = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]

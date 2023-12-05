@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ExerciceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExerciceRepository::class)]
@@ -18,7 +19,10 @@ class Exercice
     #[ORM\Column(length: 255)]
     private ?string $nomExercice = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $descriptif = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $video = null;
 
     #[ORM\ManyToOne(inversedBy: 'exercices')]
@@ -46,6 +50,18 @@ class Exercice
     public function setNomExercice(string $nomExercice): static
     {
         $this->nomExercice = $nomExercice;
+
+        return $this;
+    }
+
+    public function getDescriptif(): ?string
+    {
+        return $this->descriptif;
+    }
+
+    public function setDescriptif(string $descriptif): static
+    {
+        $this->descriptif = $descriptif;
 
         return $this;
     }

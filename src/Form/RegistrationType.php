@@ -24,8 +24,6 @@ class RegistrationType extends AbstractType
                 'format' => 'yyyy-MM-dd',
             ])
             ->add('telephone')
-            ->add('poids')
-            ->add('taille')
             ->add('isCoach')
         ;
     }
