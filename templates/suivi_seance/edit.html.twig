@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit SuiviSeance{% endblock %}
+
+{% block body %}
+    <h1>Edit SuiviSeance</h1>
+
+    {{ include('suivi_seance/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_suivi_seance_index') }}">back to list</a>
+
+    {{ include('suivi_seance/_delete_form.html.twig') }}
+{% endblock %}
