@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New ObjectifSeance{% endblock %}
+
+{% block body %}
+    <h1>Create new ObjectifSeance</h1>
+
+    {{ include('objectif_seance/_form.html.twig') }}
+
+    <a href="{{ path('app_objectif_seance_index') }}">back to list</a>
+{% endblock %}

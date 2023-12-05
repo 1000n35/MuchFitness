@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ObjectifSeance index{% endblock %}
+
+{% block body %}
+    <h1>ObjectifSeance index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>JourObjectif</th>
+                <th>Descriptif</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for objectif_seance in objectif_seances %}
+            <tr>
+                <td>{{ objectif_seance.id }}</td>
+                <td>{{ objectif_seance.jourObjectif }}</td>
+                <td>{{ objectif_seance.descriptif }}</td>
+                <td>
+                    <a href="{{ path('app_objectif_seance_show', {'id': objectif_seance.id}) }}">show</a>
+                    <a href="{{ path('app_objectif_seance_edit', {'id': objectif_seance.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_objectif_seance_new') }}">Create new</a>
+{% endblock %}

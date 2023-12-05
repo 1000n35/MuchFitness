@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SuiviSeance{% endblock %}
+
+{% block body %}
+    <h1>SuiviSeance</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ suivi_seance.id }}</td>
+            </tr>
+            <tr>
+                <th>JourSeance</th>
+                <td>{{ suivi_seance.jourSeance }}</td>
+            </tr>
+            <tr>
+                <th>Descriptif</th>
+                <td>{{ suivi_seance.descriptif }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_suivi_seance_index') }}">back to list</a>
+
+    <a href="{{ path('app_suivi_seance_edit', {'id': suivi_seance.id}) }}">edit</a>
+
+    {{ include('suivi_seance/_delete_form.html.twig') }}
+{% endblock %}
