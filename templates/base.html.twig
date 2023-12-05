@@ -12,7 +12,35 @@
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
-    </head>
+        <style>
+            body {
+                background-color: lightgray;
+            }
+            
+            header {
+                background-color: #de5200;
+                color: white;
+                padding: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            nav {
+                display: flex;
+                gap: 20px;
+            }
+            
+            nav img {
+                height: 50px;
+            }
+            
+            nav a {
+                color: white;
+                text-decoration: none;
+            }
+        </style>
+    </head>s
     <body>
         <header>
             <nav>
