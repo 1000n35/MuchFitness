@@ -12,17 +12,20 @@
         --btn-hover-color: black;
         --btn-hover-bg: black; 
     }
+    .logo {
+        width: 11%;
+        height: auto;
+        border-radius: 10%;
+    }
 </style>
 
 <div class="px-4 py-5 my-5 text-center">
-    <img class="" src="{{ asset('logo.jpg') }}" alt="Logo" width="72" height="57">
+    <img class="logo" src="{{ asset('media/logo.jpg') }}" alt="Logo">
     <h1 class="display-5 fw-bold text-body-emphasis">Much Fitness</h1>
     <div class="col-lg-6 mx-auto">
         <p class="lead mb-4">Nous avons pour but de simplifier le choix et le suivi d’un programme de musculation. Vous pourrez rechercher un programme fitness adapté à vos besoins et objectifs grâce à des filtres de recherche sur le type de programme, la durée maximale des séances, le nom des programmes ou des exercices qu’il contient.</p>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <a href="/login" class="btn btn-primary btn-lg px-4 gap-3">Commencez l'aventure</a>
-            {#<button href="/login" type="button" class="btn btn-primary btn-lg px-4 gap-3">Commencez l'aventure</button>
-            {#<button type="button" class="btn btn-outline-secondary btn-lg px-4">Secondary</button>#}
+            <a href="/registration" class="btn btn-primary btn-lg px-4 gap-3">Commencez l'aventure</a>
         </div>
     </div>
 </div>
