@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ObjectifSeance{% endblock %}
+
+{% block body %}
+    <h1>ObjectifSeance</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ objectif_seance.id }}</td>
+            </tr>
+            <tr>
+                <th>JourObjectif</th>
+                <td>{{ objectif_seance.jourObjectif }}</td>
+            </tr>
+            <tr>
+                <th>Descriptif</th>
+                <td>{{ objectif_seance.descriptif }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_objectif_seance_index') }}">back to list</a>
+
+    <a href="{{ path('app_objectif_seance_edit', {'id': objectif_seance.id}) }}">edit</a>
+
+    {{ include('objectif_seance/_delete_form.html.twig') }}
+{% endblock %}
