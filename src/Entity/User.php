@@ -68,10 +68,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $taille = null;
 
-    // METABOLISME
-    #[ORM\Column(length: 255)]
-    private ?string $metabolisme = null;
-
     // IS COACH
     #[ORM\Column]
     private ?bool $isCoach = null;
@@ -256,18 +252,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTaille(int $taille): static
     {
         $this->taille = $taille;
-
-        return $this;
-    }
-
-    public function getMetabolisme(): ?string
-    {
-        return $this->metabolisme;
-    }
-
-    public function setMetabolisme(string $metabolisme): static
-    {
-        $this->metabolisme = $metabolisme;
 
         return $this;
     }
