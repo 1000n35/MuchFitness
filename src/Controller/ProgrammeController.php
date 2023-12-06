@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Programme;
+use App\Entity\User;
 use App\Form\ProgrammeType;
 use App\Repository\ProgrammeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,9 +29,16 @@ class ProgrammeController extends AbstractController
     {
         $programme = new Programme();
 
-        $user = $security->getUser();
+        $user = $this->getUser();
+
 
         if ($user) {
+            
+            if (!$user->isIsCoach()){  //Comprend pas l'erreur mais ça marche :/
+                return $this->redirectToRoute('home'); // Redirection vers la page de connexion
+            }
+
+
             // Assigner l'ID de l'utilisateur connecté à createurId
             $programme->setCreateur($user);
 
