@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\SecurityBundle\Security;
 
 #[Route('/exercice')]
 class ExerciceController extends AbstractController
@@ -23,23 +24,43 @@ class ExerciceController extends AbstractController
     }
 
     #[Route('/new', name: 'app_exercice_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, Security $security, EntityManagerInterface $entityManager): Response
     {
         $exercice = new Exercice();
-        $form = $this->createForm(ExerciceType::class, $exercice);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($exercice);
-            $entityManager->flush();
+        $user = $this->getUser();
 
-            return $this->redirectToRoute('app_exercice_index', [], Response::HTTP_SEE_OTHER);
+
+        if ($user) {
+            
+            if (!$user->isIsCoach()){  //Comprend pas l'erreur mais ça marche :/
+                return $this->redirectToRoute('home'); // Redirection vers la page de connexion
+            }
+
+
+            // Assigner l'ID de l'utilisateur connecté à createurId
+            $exercice->setCreateur($user);
+
+            // Créer le formulaire
+            $form = $this->createForm(ExerciceType::class, $exercice);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager->persist($exercice);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_exercice_index', [], Response::HTTP_SEE_OTHER);
+            }
+
+            return $this->render('exercice/new.html.twig', [
+                'exercice' => $exercice,
+                'form' => $form,
+            ]);
+        } else {
+            // Gérer le cas où aucun utilisateur n'est connecté
+            // Redirection vers une page d'authentification, par exemple
+            return $this->redirectToRoute('app_login'); // Redirection vers la page de connexion
         }
-
-        return $this->render('exercice/new.html.twig', [
-            'exercice' => $exercice,
-            'form' => $form,
-        ]);
     }
 
     #[Route('/{id}', name: 'app_exercice_show', methods: ['GET'])]

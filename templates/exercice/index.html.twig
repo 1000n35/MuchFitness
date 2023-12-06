@@ -24,7 +24,9 @@
                 <td>{{ exercice.video }}</td>
                 <td>
                     <a href="{{ path('app_exercice_show', {'id': exercice.id}) }}">show</a>
+                    {% if app.user.getId() == exercice.getCreateur().getId()%}
                     <a href="{{ path('app_exercice_edit', {'id': exercice.id}) }}">edit</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
@@ -34,6 +36,7 @@
         {% endfor %}
         </tbody>
     </table>
-
+    {% if app.user.isIsCoach() %}
     <a href="{{ path('app_exercice_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}

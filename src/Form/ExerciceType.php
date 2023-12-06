@@ -15,8 +15,6 @@ class ExerciceType extends AbstractType
             ->add('nomExercice')
             ->add('descriptif')
             ->add('video')
-            ->add('createur')
-            ->add('contient')
         ;
     }
 
