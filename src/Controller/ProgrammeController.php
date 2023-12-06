@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\SecurityBundle\Security;
 
 #[Route('/programme')]
 class ProgrammeController extends AbstractController
@@ -23,23 +24,36 @@ class ProgrammeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, Security $security, EntityManagerInterface $entityManager): Response
     {
         $programme = new Programme();
-        $form = $this->createForm(ProgrammeType::class, $programme);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($programme);
-            $entityManager->flush();
+        $user = $security->getUser();
 
-            return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
+        if ($user) {
+            // Assigner l'ID de l'utilisateur connecté à createurId
+            $programme->setCreateur($user);
+
+            // Créer le formulaire
+            $form = $this->createForm(ProgrammeType::class, $programme);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager->persist($programme);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
+            }
+
+            return $this->render('programme/new.html.twig', [
+                'programme' => $programme,
+                'form' => $form,
+            ]);
+        } else {
+            // Gérer le cas où aucun utilisateur n'est connecté
+            // Redirection vers une page d'authentification, par exemple
+            return $this->redirectToRoute('app_login'); // Redirection vers la page de connexion
         }
-
-        return $this->render('programme/new.html.twig', [
-            'programme' => $programme,
-            'form' => $form,
-        ]);
     }
 
     #[Route('/{id}', name: 'app_programme_show', methods: ['GET'])]

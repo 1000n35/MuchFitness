@@ -15,8 +15,6 @@ class ProgrammeType extends AbstractType
             ->add('libelle')
             ->add('description')
             ->add('type')
-            ->add('createur')
-            ->add('estFavori')
         ;
     }
 

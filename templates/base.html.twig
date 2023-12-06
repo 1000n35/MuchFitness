@@ -48,9 +48,10 @@
                     <a href="/">Accueil</a>
                     <a href="/login">Connexion</a>
                 {% else %}
-                    {#<h3>Username : {{ app.user.getId() }}</h3>#}
+                    <!-- TEST DU USER ID -->
+                    <h3>User ID : {{ app.user.getId() }}</h3>
                     <a href="/">Accueil</a>
-                    <a href="">Programmes</a>
+                    <a href="/programme">Programmes</a>
                     <a href="/login">Connexion</a>
                 {% endif %}
             </nav>
