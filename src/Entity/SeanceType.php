@@ -16,6 +16,9 @@ class SeanceType
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column]
+    private ?int $jour = null;
+
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
@@ -47,6 +50,18 @@ class SeanceType
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getJour(): ?int
+    {
+        return $this->jour;
+    }
+
+    public function setJour(int $jour): static
+    {
+        $this->jour = $jour;
+
+        return $this;
     }
 
     public function getLibelle(): ?string

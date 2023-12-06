@@ -84,6 +84,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Programme::class, mappedBy: 'estFavori')]
     private Collection $progFavoris;
 
+    // PROGRAMME SUIVI PAR USER
+    #[ORM\ManyToOne(inversedBy: 'pratiquants')]
+    private ?Programme $progSuivi = null;
+
 
     public function __construct()
     {
@@ -385,5 +389,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return $this->id.' '.$this->username.' '.$this->email;
+    }
+
+    public function getProgSuivi(): ?Programme
+    {
+        return $this->progSuivi;
+    }
+
+    public function setProgSuivi(?Programme $progSuivi): static
+    {
+        $this->progSuivi = $progSuivi;
+
+        return $this;
     }
 }
