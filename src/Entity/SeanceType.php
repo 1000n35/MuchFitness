@@ -23,7 +23,7 @@ class SeanceType
     private ?string $libelle = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $objectif = null;
+    private ?string $split = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $descriptif = null;
@@ -76,14 +76,14 @@ class SeanceType
         return $this;
     }
 
-    public function getObjectif(): ?string
+    public function getSplit(): ?string
     {
-        return $this->objectif;
+        return $this->split;
     }
 
-    public function setObjectif(string $objectif): static
+    public function setSplit(string $split): static
     {
-        $this->objectif = $objectif;
+        $this->split = $split;
 
         return $this;
     }
