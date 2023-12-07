@@ -17,9 +17,17 @@ class ProgrammeController extends AbstractController
     #[Route('/', name: 'app_programme_index', methods: ['GET'])]
     public function index(ProgrammeRepository $programmeRepository): Response
     {
-        return $this->render('programme/index.html.twig', [
-            'programmes' => $programmeRepository->findAll(),
-        ]);
+        $user = $this->getUser();
+        
+        if ($user) {
+            return $this->render('programme/index.html.twig', [
+                'programmes' => $programmeRepository->findAll(),
+            ]);
+        } else {
+            // Gérer le cas où aucun utilisateur n'est connecté
+            // Redirection vers une page d'authentification, par exemple
+            return $this->redirectToRoute('app_login'); // Redirection vers la page de connexion
+        }
     }
 
     #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
