@@ -27,9 +27,16 @@
     </table>
 
 
-    {#changer le href pour mes suivis programme#}
-    
+    {#suivre programme#}
     <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id}) }}">Suivre le programme</a href> 
+
+
+    {#mettre en favoris#}
+    {% if programme.estFavori.contains(app.user) %}
+    <a href="{{ path('app_programme_EnFavoris', {'id': programme.id}) }}">Enlever des favoris</a>
+    {% else %}
+    <a href="{{ path('app_programme_EnFavoris', {'id': programme.id}) }}">Mettre le programme en favoris</a>
+    {% endif %}
 
 
 
