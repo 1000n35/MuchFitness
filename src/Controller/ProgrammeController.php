@@ -56,7 +56,10 @@ class ProgrammeController extends AbstractController
                 $entityManager->persist($programme);
                 $entityManager->flush();
 
-                return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_seance_type_new', [
+                    'programmeid' => $programme->getId(),
+                    'jour' => 1
+            ], Response::HTTP_SEE_OTHER);
             }
 
             return $this->render('programme/new.html.twig', [

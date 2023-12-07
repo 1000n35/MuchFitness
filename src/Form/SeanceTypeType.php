@@ -17,9 +17,6 @@ class SeanceTypeType extends AbstractType
             ->add('split')
             ->add('descriptif')
             ->add('duree')
-            ->add('programme')
-            ->add('createur')
-            ->add('exercices')
         ;
     }
 

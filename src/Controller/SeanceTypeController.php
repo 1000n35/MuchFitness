@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\SeanceType;
+use App\Entity\Programme;
 use App\Form\SeanceTypeType;
+use App\Repository\ProgrammeRepository;
 use App\Repository\SeanceTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,10 +25,17 @@ class SeanceTypeController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_seance_type_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new/{programmeid}/{jour}', name: 'app_seance_type_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, $programmeid, $jour, ProgrammeRepository $programmeRepository): Response
     {
+
+        $nv_jour = (int)$jour; 
+        $programme = $programmeRepository->findById($programmeid);
+
         $seanceType = new SeanceType();
+        $seanceType->setCreateur($this->getUser());
+        $seanceType->setProgramme($programme[0]);
+        $seanceType->setJour($nv_jour);
         $form = $this->createForm(SeanceTypeType::class, $seanceType);
         $form->handleRequest($request);
 
@@ -33,7 +43,10 @@ class SeanceTypeController extends AbstractController
             $entityManager->persist($seanceType);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_seance_type_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_seance_type_new', [
+                'programmeid' => $programmeid,
+                'jour' => $nv_jour+1
+        ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('seance_type/new.html.twig', [
