@@ -73,6 +73,18 @@ class ProgrammeController extends AbstractController
         }
     }
 
+    #[Route('/show/{id}', name: 'app_programme_suivreProgramme', methods: ['GET','POST'])]
+    public function suivreProg($id, ProgrammeRepository $programmeRepository,EntityManagerInterface $entityManager): Response
+    {
+        $programme=$programmeRepository->findById($id);
+        $user=$this->getUser();
+        $user->setProgSuivi($programme[0]);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_programme_index');
+        
+    }
+    
+
     #[Route('/{id}', name: 'app_programme_show', methods: ['GET'])]
     public function show(Programme $programme): Response
     {
