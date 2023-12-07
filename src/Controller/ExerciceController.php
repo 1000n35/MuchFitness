@@ -10,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\SecurityBundle\Security;
 
 #[Route('/exercice')]
 class ExerciceController extends AbstractController
@@ -24,7 +23,7 @@ class ExerciceController extends AbstractController
     }
 
     #[Route('/new', name: 'app_exercice_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, Security $security, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $exercice = new Exercice();
 
