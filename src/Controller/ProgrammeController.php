@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Programme;
-use App\Entity\User;
 use App\Form\ProgrammeType;
 use App\Repository\ProgrammeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\SecurityBundle\Security;
 
 #[Route('/programme')]
 class ProgrammeController extends AbstractController
@@ -25,7 +23,7 @@ class ProgrammeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, Security $security, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $programme = new Programme();
 
