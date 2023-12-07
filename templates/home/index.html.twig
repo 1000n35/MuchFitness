@@ -24,9 +24,16 @@
     <h1 class="display-5 fw-bold text-body-emphasis">Much Fitness</h1>
     <div class="col-lg-6 mx-auto">
         <p class="lead mb-4">Nous avons pour but de simplifier le choix et le suivi d’un programme de musculation. Vous pourrez rechercher un programme fitness adapté à vos besoins et objectifs grâce à des filtres de recherche sur le type de programme, la durée maximale des séances, le nom des programmes ou des exercices qu’il contient.</p>
+        {% if app.user is null %}
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
             <a href="/registration" class="btn btn-primary btn-lg px-4 gap-3">Commencez l'aventure</a>
         </div>
+        {% else %}
+        <div>
+            <a href="/programmes" class="btn btn-primary btn-lg px-4 gap-3">Voir les programmes</a>
+            <a href="/registration" class="btn btn-primary btn-lg px-4 gap-3">Mes suivis</a>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
