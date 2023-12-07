@@ -123,7 +123,7 @@
                     <i class="fa fa-caret-down"></i>
                 </button>
                 <div class="dropdown2-content">
-                    <a href="">Mon profil</a>
+                    <a href="/user/{{ app.user.getId() }}">Mon profil</a>
                     {% if app.user.isCoach() %}
                     <a href="">Mes Programmes</a>
                     {% endif %}

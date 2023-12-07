@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Contact;
-use App\Entity\User;
 use App\Form\ContactType;
 use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,6 +21,7 @@ class ContactController extends AbstractController
         if($this->getUser()) {
             $contact->setNom($this->getUser()->getNom());
             $contact->setPrenom($this->getUser()->getPrenom());
+            $contact->setEmail("admin@gmail.com");
         }
 
         $form = $this->createForm(ContactType::class, $contact);
