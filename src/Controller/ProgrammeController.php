@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Programme;
-use App\Entity\User;
 use App\Form\ProgrammeType;
 use App\Repository\ProgrammeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\SecurityBundle\Security;
 
 #[Route('/programme')]
 class ProgrammeController extends AbstractController
@@ -19,13 +17,21 @@ class ProgrammeController extends AbstractController
     #[Route('/', name: 'app_programme_index', methods: ['GET'])]
     public function index(ProgrammeRepository $programmeRepository): Response
     {
-        return $this->render('programme/index.html.twig', [
-            'programmes' => $programmeRepository->findAll(),
-        ]);
+        $user = $this->getUser();
+        
+        if ($user) {
+            return $this->render('programme/index.html.twig', [
+                'programmes' => $programmeRepository->findAll(),
+            ]);
+        } else {
+            // Gérer le cas où aucun utilisateur n'est connecté
+            // Redirection vers une page d'authentification, par exemple
+            return $this->redirectToRoute('app_login'); // Redirection vers la page de connexion
+        }
     }
 
     #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, Security $security, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $programme = new Programme();
 
@@ -34,7 +40,7 @@ class ProgrammeController extends AbstractController
 
         if ($user) {
             
-            if (!$user->isIsCoach()){  //Comprend pas l'erreur mais ça marche :/
+            if (!$user->isCoach()){  //Comprend pas l'erreur mais ça marche :/
                 return $this->redirectToRoute('home'); // Redirection vers la page de connexion
             }
 
