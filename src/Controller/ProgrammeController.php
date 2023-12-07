@@ -40,7 +40,7 @@ class ProgrammeController extends AbstractController
 
         if ($user) {
             
-            if (!$user->isIsCoach()){  //Comprend pas l'erreur mais ça marche :/
+            if (!$user->isCoach()){  //Comprend pas l'erreur mais ça marche :/
                 return $this->redirectToRoute('home'); // Redirection vers la page de connexion
             }
 

@@ -62,7 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     // IS COACH
     #[ORM\Column]
-    private ?bool $isCoach = null;
+    private ?bool $coach = null;
 
     // SEMAINES APPARTIENNENT À USER
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Semaine::class)]
@@ -228,14 +228,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isIsCoach(): ?bool
+    public function isCoach(): ?bool
     {
-        return $this->isCoach;
+        return $this->coach;
     }
 
-    public function setIsCoach(bool $isCoach): static
+    public function setCoach(bool $coach): static
     {
-        $this->isCoach = $isCoach;
+        $this->coach = $coach;
 
         return $this;
     }
@@ -386,11 +386,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function __toString()
-    {
-        return $this->id.' '.$this->username.' '.$this->email;
-    }
-
     public function getProgSuivi(): ?Programme
     {
         return $this->progSuivi;
@@ -401,5 +396,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->progSuivi = $progSuivi;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->id.' '.$this->username.' '.$this->email;
     }
 }
