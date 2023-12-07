@@ -24,7 +24,7 @@ class RegistrationType extends AbstractType
                 'format' => 'yyyy-MM-dd',
             ])
             ->add('telephone')
-            ->add('isCoach')
+            ->add('coach')
         ;
     }
 
