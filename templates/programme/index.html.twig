@@ -36,7 +36,7 @@
         {% endfor %}
         </tbody>
     </table>
-    {% if app.user.isIsCoach() %}
+    {% if app.user.isCoach() %}
     <a href="{{ path('app_programme_new') }}">Create new</a>
     {% endif %}
 {% endblock %}
