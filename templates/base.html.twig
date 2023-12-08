@@ -45,16 +45,14 @@
         <header>
             <nav>
                 {% if app.user is null %}
-                    <a href="/">Accueil</a>
-                    <a href="/login">Connexion</a>
+                    <a>User ID : null</a>
                 {% else %}
                     <!-- TEST DU USER ID -->
-                    <h3>User ID : {{ app.user.getId() }}</h3>
-                    <a href="/">Accueil</a>
-                    <a href="/programme">Programmes</a>
-                    <a href="/exercice">Exercices</a>
-                    <a href="/login">Connexion</a>
+                    <a>User ID : {{ app.user.getId() }}</a>
                 {% endif %}
+                <a href="/">Accueil</a>
+                <a href="/programme">Programmes</a>
+                <a href="/login">Connexion</a>
             </nav>
         </header> 
         {% block body %}

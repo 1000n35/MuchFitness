@@ -28,7 +28,7 @@
 
 
     {#suivre programme#}
-    {% if app.user.getProgSuivi() == programme%}
+    {% if app.user.getProgSuivi() == programme %}
         <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'drop'}) }}" class="btn btn-primary btn-lg px-4 gap-3">Abandonner ce programme</a href> 
     {% else %}
         <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'join'}) }}" class="btn btn-primary btn-lg px-4 gap-3">Suivre ce programme</a href> 
@@ -45,9 +45,9 @@
 
     {#contacter le coach#}
     {% if app.user.getProgSuivi() == programme %}
-    {% if app.user.getId() != programme.getCreateur().getId() %}
-        <a href="/contact" class="btn btn-primary btn-lg px-4 gap-3">Contacter le coach</a>
-    {% endif %}
+        {% if app.user.getId() != programme.getCreateur().getId() %}
+            <a href="/contact" class="btn btn-primary btn-lg px-4 gap-3">Contacter le coach</a>
+        {% endif %}
     {% endif %}
 
 

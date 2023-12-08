@@ -25,13 +25,11 @@
                 <td>{{ programme.type }}</td>
                 <td>
                     
-                    {% if app.user != null %}
                     <a href="{{ path('app_programme_show', {'id': programme.id}) }}">détails</a>
-                    {% if app.user.getId() == programme.getCreateur().getId()%}
-                    <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">modifier</a>
-                    {% endif %}
-                    {% else %}
-                    <a href="/login">détails</a>
+                    {% if app.user != null %} <!-- vérifie que user est connecté pour éviter une erreur au chargement -->
+                        {% if app.user.getId() == programme.getCreateur().getId()%}
+                            <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">modifier</a>
+                        {% endif %}
                     {% endif %}
                     
                 </td>
@@ -46,14 +44,12 @@
     </table>
     
     {% if app.user != null %}
-    <div>
-    <a href="/programme" class="btn btn-primary btn-lg px-4 gap-3">Liste des programmes en favoris</a>
-    </div>
-    {% if app.user.isCoach() %}
-    <a href="{{ path('app_programme_new') }}">Creer un nouveau</a>
-    
-
-    {% endif %}
+        <div>
+            <a href="/programme" class="btn btn-primary btn-lg px-4 gap-3">Programmes favoris</a>
+        </div>
+        {% if app.user.isCoach() %}
+            <a href="{{ path('app_programme_new') }}">Creer un programme</a>
+        {% endif %}
     {% endif %}
     
     
