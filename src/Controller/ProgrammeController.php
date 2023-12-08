@@ -15,10 +15,21 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProgrammeController extends AbstractController
 {
     #[Route('/', name: 'app_programme_index', methods: ['GET'])]
-    public function index(ProgrammeRepository $programmeRepository): Response
+    public function index(Request $request, ProgrammeRepository $programmeRepository): Response
     {
+        $user = $this->getUser();
+
+        // Récupérer tous les programmes par défaut
+        $programmes = $programmeRepository->findAll();
+
+        // Vérifier si l'utilisateur est connecté et a cliqué sur le bouton "Programmes favoris"
+        if ($user && $request->query->get('favoris')) {
+            // Récupérer les programmes favoris de l'utilisateur connecté
+            $programmes = $programmeRepository->findFavoritesByUser($user->getId());
+        }
+
         return $this->render('programme/index.html.twig', [
-            'programmes' => $programmeRepository->findAll(),
+            'programmes' => $programmes,
         ]);
     }
 
@@ -62,8 +73,8 @@ class ProgrammeController extends AbstractController
 
 
 
-    #[Route('/show/{id}/follow/{action}', name: 'app_programme_suivreProgramme', methods: ['GET','POST'])]
-    public function suivreProg(Programme $programme, $action, EntityManagerInterface $entityManager): Response
+    #[Route('/show/{id}/follow/{action}_{from}', name: 'app_programme_suivreProgramme', methods: ['GET','POST'])]
+    public function suivreProg(Programme $programme, $action, $from, EntityManagerInterface $entityManager): Response
     {
         $user=$this->getUser();
 
@@ -71,22 +82,36 @@ class ProgrammeController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        if ($action == 'join') {
-            $user->setProgSuivi($programme);
-        } else {
-            $user->setProgSuivi(null);
+        switch ($action) {
+            case 'join':
+                $user->setProgSuivi($programme);
+                break;
+
+            case 'drop':
+                $user->setProgSuivi(null);
+                break;  
+                   
         }
 
         $entityManager->flush();
-        return $this->redirectToRoute('app_programme_show', [
-            'id' => $programme->getId()
-        ]);        
+
+        switch ($from) {
+            case 'show':
+                return $this->redirectToRoute('app_programme_show', [
+                    'id' => $programme->getId()
+                ]); 
+
+            case 'index':
+                return $this->redirectToRoute('app_programme_index');
+                   
+        }
+               
     }
 
 
 
-    #[Route('/show/{id}/favorites/{action}', name: 'app_programme_enFavoris', methods: ['GET','POST'])]
-    public function enFavori(Programme $programme, $action, EntityManagerInterface $entityManager): Response
+    #[Route('/show/{id}/favorites/{action}_{from}', name: 'app_programme_enFavoris', methods: ['GET','POST'])]
+    public function enFavori(Programme $programme, $action, $from, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
         
@@ -94,17 +119,31 @@ class ProgrammeController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        if ($action == 'add') {
-            $programme->addEstFavori($user);
-        } else {
-            $programme->removeEstFavori($user);
+        switch ($action) {
+            case 'add':
+                $programme->addEstFavori($user);
+                break;
+
+            case 'remove':
+                $programme->removeEstFavori($user);
+                break;  
+                   
         }
 
         $entityManager->persist($programme);
         $entityManager->flush();
-        return $this->redirectToRoute('app_programme_show', [
-            'id' => $programme->getId()
-        ]);
+
+        switch ($from) {
+            case 'show':
+                return $this->redirectToRoute('app_programme_show', [
+                    'id' => $programme->getId()
+                ]);
+
+            case 'index':
+                return $this->redirectToRoute('app_programme_index');
+                   
+        }
+        
     }
     
     

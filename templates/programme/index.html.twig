@@ -5,6 +5,9 @@
 {% block body %}
     <h1>Programme index</h1>
 
+    {% if app.user %}
+        <a href="{{ path('app_programme_index', {'favoris': 1}) }}" class="btn btn-primary btn-lg px-4 gap-3">Programmes favoris</a>
+    {% endif %} 
 
     <table class="table">
         <thead>
@@ -27,9 +30,25 @@
                     
                     <a href="{{ path('app_programme_show', {'id': programme.id}) }}">détails</a>
                     {% if app.user != null %} <!-- vérifie que user est connecté pour éviter une erreur au chargement -->
+                        
+                        {% if app.user.getProgSuivi() == programme %}
+                            <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'drop', 'from': 'index'}) }}">abandonner</a href> 
+                        {% else %}
+                            <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'join', 'from': 'index'}) }}">suivre</a href>
+                        {% endif %}
+
+
+                        {% if programme.estFavori.contains(app.user) %}
+                            <a href="{{ path('app_programme_enFavoris', {'id': programme.id, 'action': 'remove', 'from': 'index'}) }}">- favoris</a>
+                        {% else %}
+                            <a href="{{ path('app_programme_enFavoris', {'id': programme.id, 'action': 'add', 'from': 'index'}) }}">+ favoris</a>
+                        {% endif %}
+
+
                         {% if app.user.getId() == programme.getCreateur().getId()%}
                             <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">modifier</a>
                         {% endif %}
+
                     {% endif %}
                     
                 </td>
@@ -43,10 +62,7 @@
         
     </table>
  
-    {% if app.user != null %}
-        <div>
-            <a href="/programme" class="btn btn-primary btn-lg px-4 gap-3">Programmes favoris</a>
-        </div>
+    {% if app.user %}
         {% if app.user.isCoach() %}
             <a href="{{ path('app_programme_new') }}">Creer un programme</a>
         {% endif %}

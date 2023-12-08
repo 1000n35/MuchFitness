@@ -106,27 +106,27 @@
 <body>
     <header>
         <nav>
-            {% if app.user is null %}
-            <a href="/">Accueil</a>
-            <a href="/login">Connexion</a>
-            {% else %}
             <a href="/">Accueil</a>
             <a href="/programme">Programmes</a>
-            <a href="/contact">Nous contacter</a>
-            <div class="dropdown2">
-                <button class="dropbtn2">{{ app.user.username }}
-                    <i class="fa fa-caret-down"></i>
-                </button>
-                <div class="dropdown2-content">
-                    <a href="/user/{{ app.user.getId() }}">Mon profil</a>
-                    {% if app.user.isCoach() %}
-                    <a href="">Mes programmes</a>
-                    {% endif %}
-                    <a href="">Mes suivis</a>
-                    <a href="">Programmes favoris</a>
-                    <a href="{{ path('app_logout') }}">Se déconnecter</a>
+            {% if app.user is null %}
+                <a href="/login">Connexion</a>
+            {% else %}
+                <a href="/contact">Nous contacter</a>
+                <div class="dropdown2">
+                    <button class="dropbtn2">{{ app.user.username }}
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown2-content">
+                        <a href="/user/{{ app.user.getId() }}">Mon profil</a>
+                        {% if app.user.isCoach() %}
+                            <a href="">Mes programmes</a>
+                        {% endif %}
+                        <a href="">Mes suivis</a>
+                        <a href="{{ path('app_programme_index', {'favoris': 1}) }}">Programmes favoris</a>
+                        <a href="{{ path('app_logout') }}">Se déconnecter</a>
+                    </div>
                 </div>
-            </div> {% endif %}
+            {% endif %}
         </nav>
     </header>
     {% block body %}

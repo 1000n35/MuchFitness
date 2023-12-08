@@ -21,6 +21,20 @@ class ProgrammeRepository extends ServiceEntityRepository
         parent::__construct($registry, Programme::class);
     }
 
+
+
+    public function findFavoritesByUser($userId): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.estFavori', 'u')
+            ->andWhere(':userId MEMBER OF p.estFavori')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    
+
 //    /**
 //     * @return Programme[] Returns an array of Programme objects
 //     */
