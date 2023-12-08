@@ -107,32 +107,26 @@
     <header>
         <nav>
             {% if app.user is null %}
-                <a>User ID : null</a>
+            <a href="/">Accueil</a>
+            <a href="/login">Connexion</a>
             {% else %}
-                <!-- TEST DU USER ID -->
-                <a>User ID : {{ app.user.getId() }}</a>
-            {% endif %}
             <a href="/">Accueil</a>
             <a href="/programme">Programmes</a>
-            {% if app.user is null %}
-                <a href="/login">Connexion</a>
-            {% else %}
-                <div class="dropdown2">
-                    <button class="dropbtn2">{{ app.user.username }}
-                        <i class="fa fa-caret-down"></i>
-                    </button>
-                    <div class="dropdown2-content">
-                        <a href="/user/{{ app.user.getId() }}">Mon profil</a>
-                        {% if app.user.isCoach() %}
-                            <a href="">Mes programmes</a>
-                        {% endif %}
-                        <a href="">Mes suivis</a>
-                        <a href="">Programmes favoris</a>
-                        <a href="{{ path('app_logout') }}">Se déconnecter</a>
-                    </div>
+            <a href="/contact">Nous contacter</a>
+            <div class="dropdown2">
+                <button class="dropbtn2">{{ app.user.username }}
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown2-content">
+                    <a href="/user/{{ app.user.getId() }}">Mon profil</a>
+                    {% if app.user.isCoach() %}
+                    <a href="">Mes programmes</a>
+                    {% endif %}
+                    <a href="">Mes suivis</a>
+                    <a href="">Programmes favoris</a>
+                    <a href="{{ path('app_logout') }}">Se déconnecter</a>
                 </div>
-                <a href="/contact">Nous contacter</a>
-            {% endif %}
+            </div> {% endif %}
         </nav>
     </header>
     {% block body %}

@@ -3,11 +3,11 @@
 {% block title %}Profil{% endblock %}
 
 {% block body %}
-    {% for message in app.flashes("success") %}
+{% for message in app.flashes("success") %}
     <div class="flash-notice">
         {{ message }}
     </div>
-    {% endfor %}
+{% endfor %}
     <div class="container">
         <h1>Profil de {{ app.user.username }}</h1>
         <div>
