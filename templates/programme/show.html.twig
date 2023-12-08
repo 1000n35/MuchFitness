@@ -26,10 +26,35 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_programme_index') }}">back to list</a>
-    {% if app.user.getId() == programme.getCreateur().getId()%}
-    <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">edit</a>
-   
-    {{ include('programme/_delete_form.html.twig') }}
+
+    {#suivre programme#}
+    {% if app.user.getProgSuivi() == programme %}
+        <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'drop'}) }}" class="btn btn-primary btn-lg px-4 gap-3">Abandonner ce programme</a href> 
+    {% else %}
+        <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'join'}) }}" class="btn btn-primary btn-lg px-4 gap-3">Suivre ce programme</a href> 
     {% endif %}
+
+
+    {#mettre en favoris#}
+    {% if programme.estFavori.contains(app.user) %}
+        <a href="{{ path('app_programme_enFavoris', {'id': programme.id, 'action': 'remove'}) }}" class="btn btn-primary btn-lg px-4 gap-3">Enlever des favoris</a>
+    {% else %}
+        <a href="{{ path('app_programme_enFavoris', {'id': programme.id, 'action': 'add'}) }}" class="btn btn-primary btn-lg px-4 gap-3">Ajouter aux favoris</a>
+    {% endif %}
+
+
+    {#contacter le coach#}
+    {% if app.user.getProgSuivi() == programme %}
+        {% if app.user.getId() != programme.getCreateur().getId() %}
+            <a href="/contact" class="btn btn-primary btn-lg px-4 gap-3">Contacter le coach</a>
+        {% endif %}
+    {% endif %}
+
+
+    {% if app.user.getId() == programme.getCreateur().getId()%}
+        <a href="{{ path('app_programme_edit', {'id': programme.id}) }}" class="btn btn-primary btn-lg px-4 gap-3">Modifier</a>
+        {{ include('programme/_delete_form.html.twig') }}
+    {% endif %}
+    <a href="{{ path('app_programme_index') }}">retour à la liste</a>
+
 {% endblock %}

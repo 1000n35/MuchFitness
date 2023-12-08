@@ -5,6 +5,7 @@
 {% block body %}
     <h1>Programme index</h1>
 
+
     <table class="table">
         <thead>
             <tr>
@@ -23,20 +24,33 @@
                 <td>{{ programme.description }}</td>
                 <td>{{ programme.type }}</td>
                 <td>
-                    <a href="{{ path('app_programme_show', {'id': programme.id}) }}">show</a>
-                    {% if app.user.getId() == programme.getCreateur().getId()%}
-                        <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">edit</a>
+                    
+                    <a href="{{ path('app_programme_show', {'id': programme.id}) }}">détails</a>
+                    {% if app.user != null %} <!-- vérifie que user est connecté pour éviter une erreur au chargement -->
+                        {% if app.user.getId() == programme.getCreateur().getId()%}
+                            <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">modifier</a>
+                        {% endif %}
                     {% endif %}
+                    
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">pas encore de programme</td>
             </tr>
         {% endfor %}
         </tbody>
+        
     </table>
-    {% if app.user.isCoach() %}
-        <a href="{{ path('app_programme_new') }}">Create new</a>
-    {% endif %}
+ 
+    {% if app.user != null %}
+        <div>
+            <a href="/programme" class="btn btn-primary btn-lg px-4 gap-3">Programmes favoris</a>
+        </div>
+        {% if app.user.isCoach() %}
+            <a href="{{ path('app_programme_new') }}">Creer un programme</a>
+        {% endif %}
+    {% endif %} 
+    
+    
 {% endblock %}
