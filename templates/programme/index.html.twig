@@ -25,7 +25,7 @@
                 <td>
                     <a href="{{ path('app_programme_show', {'id': programme.id}) }}">show</a>
                     {% if app.user.getId() == programme.getCreateur().getId()%}
-                    <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">edit</a>
+                        <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">edit</a>
                     {% endif %}
                 </td>
             </tr>
@@ -37,6 +37,6 @@
         </tbody>
     </table>
     {% if app.user.isCoach() %}
-    <a href="{{ path('app_programme_new') }}">Create new</a>
+        <a href="{{ path('app_programme_new') }}">Create new</a>
     {% endif %}
 {% endblock %}
