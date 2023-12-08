@@ -5,6 +5,13 @@
 {% block body %}
     <h1>Programme index</h1>
 
+{% if app.user != null %}
+	<div>
+		<a href="/programme" class="btn btn-primary btn-lg px-4 gap-3">Programmes favoris</a>
+	</div>
+{% endif %}
+
+
 
     <table class="table">
         <thead>
@@ -44,9 +51,6 @@
     </table>
  
     {% if app.user != null %}
-        <div>
-            <a href="/programme" class="btn btn-primary btn-lg px-4 gap-3">Programmes favoris</a>
-        </div>
         {% if app.user.isCoach() %}
             <a href="{{ path('app_programme_new') }}">Creer un programme</a>
         {% endif %}

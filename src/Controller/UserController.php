@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Security\Core\Security;
 
 class UserController extends AbstractController
 {
@@ -62,6 +64,12 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $form->getData();
 
+            // Charger l'objet File à partir du chemin stocké
+            $imagePath = $user->getImageFile();
+            $imageFile = new File($imagePath);
+
+
+
             $em = $doctrine->getManager();
             $em->persist($user);
             $em->flush();
@@ -72,7 +80,10 @@ class UserController extends AbstractController
         }
 
         return $this->render('user/edit.html.twig', [
+            'user' => $user,
             'form' => $form->createView(),
         ]);
     }
+
+
 }
