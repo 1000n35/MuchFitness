@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/objectif/seance')]
+#[Route('/objectif')]
 class ObjectifSeanceController extends AbstractController
 {
     #[Route('/', name: 'app_objectif_seance_index', methods: ['GET'])]

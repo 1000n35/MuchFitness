@@ -42,7 +42,7 @@
         </tbody>
         
     </table>
-    
+ 
     {% if app.user != null %}
         <div>
             <a href="/programme" class="btn btn-primary btn-lg px-4 gap-3">Programmes favoris</a>
@@ -50,8 +50,7 @@
         {% if app.user.isCoach() %}
             <a href="{{ path('app_programme_new') }}">Creer un programme</a>
         {% endif %}
-    {% endif %}
-    
+    {% endif %} 
     
     
 {% endblock %}
