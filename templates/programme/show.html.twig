@@ -46,7 +46,7 @@
     {#contacter le coach#}
     {% if app.user.getProgSuivi() == programme %}
         {% if app.user.getId() != programme.getCreateur().getId() %}
-            <a href="/contact" class="btn btn-primary btn-lg px-4 gap-3">Contacter le coach</a>
+            <a href="/contact/{{ app.user.getId() }}" class="btn btn-primary btn-lg px-4 gap-3">Contacter le coach</a>
         {% endif %}
     {% endif %}
 
