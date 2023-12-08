@@ -58,7 +58,7 @@ class ProgrammeController extends AbstractController
 
                 return $this->redirectToRoute('app_seance_type_new', [
                     'programmeid' => $programme->getId(),
-                    'jour' => 1
+                    'jour' => 0
             ], Response::HTTP_SEE_OTHER);
             }
 
