@@ -73,34 +73,39 @@ class ProgrammeController extends AbstractController
         }
     }
 
-    #[Route('/show/{id}', name: 'app_programme_EnFavoris', methods: ['GET','POST'])]
-public function mettreFavori($id, ProgrammeRepository $programmeRepository, EntityManagerInterface $entityManager): Response
-{
-    
-    $programme = $programmeRepository->find($id);
-    $user = $this->getUser();
-
-    if ($programme->getEstFavori()->contains($user)) {
-        $programme->removeEstFavori($user);
-    }
-    else {
-        $programme->addEstFavori($user);
-    }
-    $entityManager->persist($programme);
-    $entityManager->flush();
-    return $this->redirectToRoute('app_programme_index');
-}
 
 
-    #[Route('/show/{id}', name: 'app_programme_suivreProgramme', methods: ['GET','POST'])]
-    public function suivreProg($id, ProgrammeRepository $programmeRepository,EntityManagerInterface $entityManager): Response
+    #[Route('/show/{id}/follow/{action}', name: 'app_programme_suivreProgramme', methods: ['GET','POST'])]
+    public function suivreProg(Programme $programme, $action, EntityManagerInterface $entityManager): Response
     {
-        $programme=$programmeRepository->findById($id);
         $user=$this->getUser();
-        $user->setProgSuivi($programme[0]);
+
+        if ($action == 'join') {
+            $user->setProgSuivi($programme);
+        } else {
+            $user->setProgSuivi(null);
+        }
+
         $entityManager->flush();
-        return $this->redirectToRoute('app_programme_index');
-        
+        return $this->redirectToRoute('app_programme_show', ['id' => $programme->getId()]);
+    }
+
+
+
+    #[Route('/show/{id}/favorites/{action}', name: 'app_programme_enFavoris', methods: ['GET','POST'])]
+    public function enFavori(Programme $programme, $action, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+
+        if ($action == 'add') {
+            $programme->addEstFavori($user);
+        } else {
+            $programme->removeEstFavori($user);
+        }
+
+        $entityManager->persist($programme);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_programme_show', ['id' => $programme->getId()]);
     }
     
     

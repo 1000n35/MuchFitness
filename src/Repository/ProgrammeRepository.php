@@ -45,14 +45,4 @@ class ProgrammeRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-
-public function findById($value): array
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.id = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
 }
