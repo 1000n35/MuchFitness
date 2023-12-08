@@ -12,11 +12,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Serializable; // Importez l'interface Serializable
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[Vich\Uploadable] // Ajoutez cette annotation pour indiquer que l'entité est "uploadable"
+#[Vich\Uploadable]
 
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface,Serializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -477,6 +478,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getImagePath(): ?string
     {
         return $this->imagePath;
+    }
+
+    public function serialize(): string
+    {
+        return serialize([
+            $this->id,
+            $this->username,
+            $this->roles,
+            $this->password,
+            $this->email,
+            // ... autres propriétés que vous souhaitez sérialiser ...
+        ]);
+    }
+
+    public function unserialize($serialized): void
+    {
+        [
+            $this->id,
+            $this->username,
+            $this->roles,
+            $this->password,
+            $this->email,
+            // ... autres propriétés que vous souhaitez désérialiser ...
+        ] = unserialize($serialized);
     }
     
 }

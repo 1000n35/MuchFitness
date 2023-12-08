@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\Security;
 
+
 class UserController extends AbstractController
 {
     #[Route('/user/{id}', name: 'app_user')]
