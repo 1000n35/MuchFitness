@@ -26,11 +26,13 @@ class SeanceTypeController extends AbstractController
     }
 
     #[Route('/new/{programmeid}/{jour}', name: 'app_seance_type_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, $programmeid, $jour, ProgrammeRepository $programmeRepository,ExerciceRepository $exerciceRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, $programmeid, $jour, ProgrammeRepository $programmeRepository): Response
     {
 
         $nv_jour = (int)$jour + 1; 
         $programme = $programmeRepository->findById($programmeid);
+        $user = $this->getUser();
+        $exercices = $user->getExercices();
 
         $seanceType = new SeanceType();
         $seanceType->setCreateur($this->getUser());
@@ -43,7 +45,7 @@ class SeanceTypeController extends AbstractController
             $entityManager->persist($seanceType);
             $entityManager->flush();
             return $this->render('exercice/choix.html.twig', [
-                'exercices' => $exerciceRepository->findAll(),
+                'exercices' => $exercices,
                 'programmeid' => $programmeid,
                 'jour' => $nv_jour,
                 'seancetype' => $seanceType,
