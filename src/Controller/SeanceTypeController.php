@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\SeanceType;
-use App\Entity\Programme;
 use App\Form\SeanceTypeType;
+use App\Repository\ExerciceRepository;
 use App\Repository\ProgrammeRepository;
 use App\Repository\SeanceTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,8 +29,10 @@ class SeanceTypeController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, $programmeid, $jour, ProgrammeRepository $programmeRepository): Response
     {
 
-        $nv_jour = (int)$jour; 
+        $nv_jour = (int)$jour + 1; 
         $programme = $programmeRepository->findById($programmeid);
+        $user = $this->getUser();
+        $exercices = $user->getExercices();
 
         $seanceType = new SeanceType();
         $seanceType->setCreateur($this->getUser());
@@ -42,11 +44,14 @@ class SeanceTypeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($seanceType);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_seance_type_new', [
+            return $this->render('exercice/choix.html.twig', [
+                'exercices' => $exercices,
                 'programmeid' => $programmeid,
-                'jour' => $nv_jour+1
-        ], Response::HTTP_SEE_OTHER);
+                'jour' => $nv_jour,
+                'seancetype' => $seanceType,
+                'seancetypeid' => $seanceType->getId(),
+                'exercicePresents' => []
+            ]);
         }
 
         return $this->render('seance_type/new.html.twig', [

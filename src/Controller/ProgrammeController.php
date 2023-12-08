@@ -43,6 +43,39 @@ class ProgrammeController extends AbstractController
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
+        if ($user) {
+            
+            if (!$user->isCoach()){  //Comprend pas l'erreur mais ça marche :/
+                return $this->redirectToRoute('home'); // Redirection vers la page de connexion
+            }
+
+
+            // Assigner l'ID de l'utilisateur connecté à createurId
+            $programme->setCreateur($user);
+
+            // Créer le formulaire
+            $form = $this->createForm(ProgrammeType::class, $programme);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager->persist($programme);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_seance_type_new', [
+                    'programmeid' => $programme->getId(),
+                    'jour' => 0
+            ], Response::HTTP_SEE_OTHER);
+            }
+
+            return $this->render('programme/new.html.twig', [
+                'programme' => $programme,
+                'form' => $form,
+            ]);
+        } else {
+            // Gérer le cas où aucun utilisateur n'est connecté
+            // Redirection vers une page d'authentification, par exemple
+            return $this->redirectToRoute('app_login'); // Redirection vers la page de connexion
+        }
         
         if (!$user->isCoach()){  //Comprend pas l'erreur mais ça marche :/
             return $this->redirectToRoute('app_programme_index'); // Redirection vers la page de connexion
