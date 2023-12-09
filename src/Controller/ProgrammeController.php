@@ -19,18 +19,23 @@ class ProgrammeController extends AbstractController
     {
         $user = $this->getUser();
 
-        // Récupérer tous les programmes par défaut
-        $programmes = $programmeRepository->findAll();
+        $type = $request->query->get('type');
+        $nbJour = $request->query->get('nbJour');
+        $dureeMax = $request->query->get('dureeMax');
+        $favoris = $request->query->get('favoris');
+        $mesprogs = $request->query->get('mesprogs');
 
-        // Vérifier si l'utilisateur est connecté et a cliqué sur le bouton "Programmes favoris"
-        if ($user && $request->query->get('favoris')) {
-            // Récupérer les programmes favoris de l'utilisateur connecté
-            $programmes = $programmeRepository->findFavoritesByUser($user->getId());
-        }
+        $programmes = $programmeRepository->findByFilters($type, $nbJour, $dureeMax, $favoris, $mesprogs, $user->getId());
 
         return $this->render('programme/index.html.twig', [
             'programmes' => $programmes,
+            'type' => $type,
+            'nbJour' => $nbJour,
+            'dureeMax' => $dureeMax,
+            'favoris' => $favoris,
+            'mesprogs' => $mesprogs,
         ]);
+
     }
 
     #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
@@ -43,43 +48,11 @@ class ProgrammeController extends AbstractController
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
-        if ($user) {
-            
-            if (!$user->isCoach()){  //Comprend pas l'erreur mais ça marche :/
-                return $this->redirectToRoute('home'); // Redirection vers la page de connexion
-            }
 
-
-            // Assigner l'ID de l'utilisateur connecté à createurId
-            $programme->setCreateur($user);
-
-            // Créer le formulaire
-            $form = $this->createForm(ProgrammeType::class, $programme);
-            $form->handleRequest($request);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                $entityManager->persist($programme);
-                $entityManager->flush();
-
-                return $this->redirectToRoute('app_seance_type_new', [
-                    'programmeid' => $programme->getId(),
-                    'jour' => 0
-            ], Response::HTTP_SEE_OTHER);
-            }
-
-            return $this->render('programme/new.html.twig', [
-                'programme' => $programme,
-                'form' => $form,
-            ]);
-        } else {
-            // Gérer le cas où aucun utilisateur n'est connecté
-            // Redirection vers une page d'authentification, par exemple
-            return $this->redirectToRoute('app_login'); // Redirection vers la page de connexion
+        if (!$user->isCoach()) {
+            return $this->redirectToRoute('app_programme_index');
         }
-        
-        if (!$user->isCoach()){  //Comprend pas l'erreur mais ça marche :/
-            return $this->redirectToRoute('app_programme_index'); // Redirection vers la page de connexion
-        }
+
 
         // Assigner l'ID de l'utilisateur connecté à createurId
         $programme->setCreateur($user);
@@ -94,26 +67,30 @@ class ProgrammeController extends AbstractController
 
             return $this->redirectToRoute('app_seance_type_new', [
                 'programmeid' => $programme->getId(),
-                'jour' => 1
-        ], Response::HTTP_SEE_OTHER);
+                'jour' => 0
+            ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('programme/new.html.twig', [
             'programme' => $programme,
             'form' => $form,
-        ]);
+        ]);        
+        
     }
 
 
 
-    #[Route('/show/{id}/follow/{action}_{from}', name: 'app_programme_suivreProgramme', methods: ['GET','POST'])]
-    public function suivreProg(Programme $programme, $action, $from, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/follow', name: 'app_programme_suivreProgramme', methods: ['GET','POST'])]
+    public function suivreProg(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
     {
         $user=$this->getUser();
 
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
+
+        $action = $request->query->get('action');
+        $from = $request->query->get('from');
 
         switch ($action) {
             case 'join':
@@ -143,14 +120,17 @@ class ProgrammeController extends AbstractController
 
 
 
-    #[Route('/show/{id}/favorites/{action}_{from}', name: 'app_programme_enFavoris', methods: ['GET','POST'])]
-    public function enFavori(Programme $programme, $action, $from, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/favorites', name: 'app_programme_enFavoris', methods: ['GET','POST'])]
+    public function enFavori(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        
+
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
+
+        $action = $request->query->get('action');
+        $from = $request->query->get('from');
 
         switch ($action) {
             case 'add':

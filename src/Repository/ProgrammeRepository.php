@@ -33,6 +33,49 @@ class ProgrammeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+
+
+    public function findByFilters($type, $nbJour, $dureeMax, $favoris, $mesprogs, $userId): array
+    {
+        $queryBuilder =$this->createQueryBuilder('p')
+            ->leftJoin('p.seanceTypes', 's')            // requis pour nbjour, dureemax
+            ->groupBy('p.id')                           // requis pour nbjour, dureemax
+            ->leftJoin('p.estFavori', 'u');             // requis pour favoris
+
+        if ($type) {
+            // Filtre sur le type de programme
+            $queryBuilder->andWhere('p.type = :type')
+                ->setParameter('type', $type);
+        }
+
+        if ($nbJour) {
+            // Filtre sur le nombre de jours (nombre de séances)
+            $queryBuilder->andHaving('COUNT(s) = :nbJour')
+                ->setParameter('nbJour', $nbJour);
+        }
+
+        if ($dureeMax) {
+            // Filtre la duree max des séances d'un programme
+            $queryBuilder->andHaving('MAX(s.duree) <= :dureeMax')
+                ->setParameter('dureeMax', $dureeMax);
+        }
+
+        if ($favoris) {
+            // Filtre favoris
+            $queryBuilder->andWhere(':userId MEMBER OF p.estFavori')
+                ->setParameter('userId', $userId);
+        }
+
+        if ($mesprogs) {
+            // Filtre mes programmes
+            $queryBuilder->andWhere('p.createur = :userId')
+                ->setParameter('userId', $userId);
+        }
+    
+        return $queryBuilder->getQuery()->getResult();
+
+    }
+
     
 
 //    /**

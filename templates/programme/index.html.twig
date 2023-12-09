@@ -5,31 +5,54 @@
 {% block body %}
     <h1>Programme index</h1>
 
-{% if app.user != null %}
-	<div>
-		<a href="/programme" class="btn btn-primary btn-lg px-4 gap-3">Programmes favoris</a>
-	</div>
-{% endif %}
+    <form>
 
+        <label for="type"> Type </label>
+        <select id="type" name="type">
+            <option {{ type == 0 ? 'selected' }} value="">--</option>
+            <option {{ type == "puissance" ? 'selected' }} value="puissance">Puissance</option>
+            <option {{ type == "hypertrophie" ? 'selected' }} value="hypertrophie">Hypertrophie</option>
+            <option {{ type == "endurance" ? 'selected' }} value="endurance">Endurance</option>
+        </select>
 
+        <input placeholder="Nombre de Jours" name="nbJour" value="{{nbJour}}">
+
+        <label for="dureeMax"> Durée Max </label>
+        <input id="dureeMax" type="time" name="dureeMax" value="{{dureeMax}}" placeholder="Duree Max">
+
+        <input id="favoris" type="checkbox" name="favoris" value="1">
+        <label for="favoris"> Favoris </label>
+
+        {% if app.user.isCoach() %}
+            <input id="mesprogs" type="checkbox" name="mesprogs" value="1">
+            <label for="mesprogs"> Mes programmes </label>
+        {% endif %}
+
+        <input type="submit" value="Valider">
+        
+    </form>
+    
+    {# {% if app.user %}
+        <a href="{{ path('app_programme_index', {'favoris': 1}) }}" class="btn btn-primary btn-lg px-4 gap-3">Programmes favoris</a>
+    {% endif %} #}
 
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Libelle</th>
                 <th>Description</th>
                 <th>Type</th>
+                <th>Créateur</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for programme in programmes %}
             <tr>
-                <td>{{ programme.id }}</td>
                 <td>{{ programme.libelle }}</td>
                 <td>{{ programme.description }}</td>
                 <td>{{ programme.type }}</td>
+                <td>{{ programme.getCreateur().getUsername() }}</td>
                 <td>
                     
                     <a href="{{ path('app_programme_show', {'id': programme.id}) }}">détails</a>
