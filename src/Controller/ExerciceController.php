@@ -91,7 +91,7 @@ class ExerciceController extends AbstractController
     }
 
     #[Route('/{programmeid}/{jour}/{seancetypeid}', name: 'app_exercice_creer_exo', methods: ['GET','POST'])]
-    public function ajoutExo(Request $request, $programmeid, $jour, $seancetypeid,SeanceTypeRepository $seanceTypeRepository,ExerciceRepository $exerciceRepository,EntityManagerInterface $entityManager): Response
+    public function ajoutExo(Request $request, $programmeid, $jour, $seancetypeid,SeanceTypeRepository $seanceTypeRepository,ExerciceRepository $exerciceRepository,EntityManagerInterface $entityManager,SluggerInterface $slugger): Response
     {
         $exercice = new Exercice();
 
@@ -116,6 +116,29 @@ class ExerciceController extends AbstractController
 
             $exercice->addContient($seanceType[0]);
             if ($form->isSubmitted() && $form->isValid()) {
+                $videoFile = $form->get('video')->getData();
+                if ($videoFile) {
+                    $originalFilename = pathinfo($videoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    // this is needed to safely include the file name as part of the URL
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$videoFile->guessExtension();
+    
+                    // Move the file to the directory where brochures are stored
+                    try {
+                        $videoFile->move(
+                            $this->getParameter('video_directory'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        // ... handle exception if something happens during file upload
+                    }
+    
+                    // updates the 'brochureFilename' property to store the PDF file name
+                    // instead of its contents
+                    $exercice->setVideoFilename($newFilename);
+                }
+
+
                 $entityManager->persist($exercice);
                 $entityManager->flush();
                 return $this->render('exercice/choix.html.twig', [
