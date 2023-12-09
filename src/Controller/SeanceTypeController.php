@@ -55,6 +55,7 @@ class SeanceTypeController extends AbstractController
         }
 
         return $this->render('seance_type/new.html.twig', [
+            'jour' => $nv_jour,
             'seance_type' => $seanceType,
             'form' => $form,
         ]);

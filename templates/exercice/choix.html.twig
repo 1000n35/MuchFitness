@@ -3,7 +3,7 @@
 {% block title %}Choix création/utilisation existants{% endblock %}
 
 {% block body %}
-
+    <h2>Vos exercices disponibles à l'ajout</h2>
     <table class="table">
         <thead>
             <tr>
@@ -25,29 +25,42 @@
                 <td>{{ exercice.video }}</td>
                 <td>
                     {#<a href="{{ path('app_exercice_show', {'id': exercice.id}) }}">show</a>#}
-                    <a href="{{ path('app_exercice_ajout', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid, 'exerciceid': exercice.id}) }}">ajouter</a>
+                    <a href="{{ path('app_exercice_ajout_retire', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid, 'exerciceid': exercice.id}) }}">ajouter</a>
                 </td>
         </tr>
         {% endif %}
         {% endfor %}
+        </tbody>
+    </table>
+    <h2>Vos exercices déjà dans la séance</h2>
+    <table class="table">
+        <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>NomExercice</th>
+                    <th>Descriptif</th>
+                    <th>Video</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
 
-        {% for exercicePres in exercicePresents %}
-        <tr>
+            {% for exercicePres in exercicePresents %}
+            <tr>
                 <td>{{ exercicePres.id }}</td>
                 <td>{{ exercicePres.nomExercice }}</td>
                 <td>{{ exercicePres.descriptif }}</td>
                 <td>{{ exercicePres.video }}</td>
-                {#<td>
-                    <a href="{{ path('app_exercice_show', {'id': exercice.id}) }}">show</a>
-                    <a href="{{ path('app_exercice_ajout', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid, 'exerciceid': exercice.id}) }}">ajouter</a>
-                </td>#}
-        </tr>
-        {% endfor %}
+                <td>
+                    <a href="{{ path('app_exercice_ajout_retire', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid, 'exerciceid': exercicePres.id}) }}">retirer</a>
+                </td>
+            </tr>
+            {% endfor %}
 
-        <a href="{{ path('app_exercice_creer_exo', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid}) }}">Créer un exercice pour ce programme</a>
+            </tbody>
+        </table>
+    <a href="{{ path('app_exercice_creer_exo', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid}) }}">Créer un exercice pour ce programme</a>
 
-        <a href="{{ path('app_seance_type_new', {'programmeid': programmeid, 'jour': jour}) }}">Finir la séance Type</a>
+    <a href="{{ path('app_seance_type_new', {'programmeid': programmeid, 'jour': jour}) }}">Finir la séance Type</a>
 
-        </tbody>
-    </table>
     {% endblock %}

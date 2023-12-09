@@ -129,12 +129,17 @@ class ExerciceController extends AbstractController
         ]);
     }
 
-    #[Route('/{programmeid}/{jour}/{seancetypeid}/{exerciceid}', name: 'app_exercice_ajout', methods: ['GET','POST'])]
-    public function ajout($programmeid, $jour, $seancetypeid,$exerciceid,ExerciceRepository $exerciceRepository, SeanceTypeRepository $seanceTypeRepository,EntityManagerInterface $entityManager,): Response
+    #[Route('/{programmeid}/{jour}/{seancetypeid}/{exerciceid}', name: 'app_exercice_ajout_retire', methods: ['GET','POST'])]
+    public function ajout($programmeid, $jour, $seancetypeid,$exerciceid,ExerciceRepository $exerciceRepository, SeanceTypeRepository $seanceTypeRepository,EntityManagerInterface $entityManager): Response
     {
         $exercice = $exerciceRepository->findById((int) $exerciceid);
         $seanceType = $seanceTypeRepository->findById((int) $seancetypeid);
-        $exercice[0]->addContient($seanceType[0]);
+        if ($exercice[0]->getContient()->contains($seanceType[0])){
+            $exercice[0]->removeContient($seanceType[0]);
+        } else {
+            $exercice[0]->addContient($seanceType[0]);
+        }
+        
         $exercicePresents = $seanceType[0]->getExercices();
 
         $entityManager->persist($exercice[0]);
@@ -146,18 +151,16 @@ class ExerciceController extends AbstractController
             'jour' => $jour,
             'seancetype' => $seanceType[0],
             'seancetypeid' => $seancetypeid,
-            'exerciceid' => $exerciceid,
             'exercicePresents' => $exercicePresents
         ]);
         
     }
-
-
-    #[Route('/{id}', name: 'app_exercice_show', methods: ['GET'])]
-    public function show(Exercice $exercice): Response
+    #[Route('/{id}/{seancetypeid}', name: 'app_exercice_show', methods: ['GET'])]
+    public function show(Exercice $exercice, $seancetypeid): Response
     {
         return $this->render('exercice/show.html.twig', [
             'exercice' => $exercice,
+            'seancetypeid' => $seancetypeid
         ]);
     }
 

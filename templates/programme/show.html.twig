@@ -26,6 +26,30 @@
         </tbody>
     </table>
 
+    <h2>Séances Types du Programme</h2>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Libelle</th>
+                    <th>Split</th>
+                    <th>Descriptif</th>
+                    <th>Durée de la séance</th>
+                    <th>Actions</th>
+                </tr>
+                {% for seanceType in programme.seanceTypes %}
+                    <tr>
+                        <td>{{ seanceType.libelle }}</td>
+                        <td>{{ seanceType.split }}</td>
+                        <td>{{ seanceType.descriptif }}</td>
+                        <td>{{ seanceType.duree|date('H:i:s') }}</td>
+                        <td>
+                        <a href = "{{ path('app_seance_type_show', {'id': seanceType.id}) }}">Détail de la séance</a href>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
 
     {#suivre programme#}
     {% if app.user.getProgSuivi() == programme %}
