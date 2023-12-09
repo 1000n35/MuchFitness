@@ -22,7 +22,7 @@
                 <td>{{ exercice.id }}</td>
                 <td>{{ exercice.nomExercice }}</td>
                 <td>{{ exercice.descriptif }}</td>
-                <td>{{ exercice.video }}</td>
+                <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
                 <td>
                     {#<a href="{{ path('app_exercice_show', {'id': exercice.id}) }}">show</a>#}
                     <a href="{{ path('app_exercice_ajout_retire', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid, 'exerciceid': exercice.id}) }}">ajouter</a>
@@ -50,7 +50,7 @@
                 <td>{{ exercicePres.id }}</td>
                 <td>{{ exercicePres.nomExercice }}</td>
                 <td>{{ exercicePres.descriptif }}</td>
-                <td>{{ exercicePres.video }}</td>
+                <td><a href="{{ asset('uploads/video/' ~ exercicePres.videoFilename) }}">Voir la vidéo</a></td>
                 <td>
                     <a href="{{ path('app_exercice_ajout_retire', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid, 'exerciceid': exercicePres.id}) }}">retirer</a>
                 </td>

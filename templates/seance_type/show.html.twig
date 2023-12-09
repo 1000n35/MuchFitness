@@ -48,7 +48,7 @@
                     <tr>
                         <td>{{ exercice.nomExercice }}</td>
                         <td>{{ exercice.descriptif }}</td>
-                        <td>{{ exercice.video }}</td>
+                        <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
                         <td>
                         <a href = "{{ path('app_exercice_show', {'id': exercice.id, 'seancetypeid' : seance_type.id}) }}">Détail de l'exerice</a href>
                         </td>
