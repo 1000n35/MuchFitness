@@ -21,11 +21,13 @@
             </tr>
             <tr>
                 <th>Video</th>
-                <td>{{ exercice.video }}</td>
+                <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
             </tr>
         </tbody>
     </table>
+    {% if 'seancetypeid' == '-1' %}
     <a href = "{{ path('app_seance_type_show', {'id': seancetypeid}) }}">Retour à la séance</a href>
+    {% endif %}
     {% if app.user.getId() == exercice.getCreateur().getId()%}
     <a href="{{ path('app_exercice_edit', {'id': exercice.id}) }}">edit</a>
 
