@@ -16,7 +16,17 @@
             <p>Prénom : {{ app.user.getPrenom() }}</p>
             <p>Date de Naissance : {{ user.dateNaissance|date('Y-m-d H:i:s') }}</p>
             <p>Téléphone : {{ app.user.getTelephone() }}</p>
+
+    {% if user.imageName %}
+        <img style="max-width:20%" src="{{ vich_uploader_asset(user, 'imageFile') }}" alt="Photo de profil de {{ user.username }}">
+    {% else %}
+        <p>Aucune photo de profil disponible.</p>
+    {% endif %}
+    
+        <div>
+        <br>
             <a href="/user/edit/{{app.user.getId()}}" class="btn btn-primary btn-lg px-4 gap-3">Modifier mes informations</a>
+            </div>
         </div>
     </div>
 {% endblock %}
