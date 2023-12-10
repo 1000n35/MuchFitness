@@ -15,11 +15,29 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProgrammeController extends AbstractController
 {
     #[Route('/', name: 'app_programme_index', methods: ['GET'])]
-    public function index(ProgrammeRepository $programmeRepository): Response
+    public function index(Request $request, ProgrammeRepository $programmeRepository): Response
     {
+        $user = $this->getUser();
+
+        $search = $request->query->get('search');
+        $type = $request->query->get('type');
+        $nbJour = $request->query->get('nbJour');
+        $dureeMax = $request->query->get('dureeMax');
+        $favoris = $request->query->get('favoris');
+        $mesprogs = $request->query->get('mesprogs');
+
+        $programmes = $programmeRepository->findByFilters($search, $type, $nbJour, $dureeMax, $favoris, $mesprogs, $user->getId());
+
         return $this->render('programme/index.html.twig', [
-            'programmes' => $programmeRepository->findAll(),
+            'programmes' => $programmes,
+            'search' => $search,
+            'type' => $type,
+            'nbJour' => $nbJour,
+            'dureeMax' => $dureeMax,
+            'favoris' => $favoris,
+            'mesprogs' => $mesprogs,
         ]);
+
     }
 
     #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
@@ -32,10 +50,11 @@ class ProgrammeController extends AbstractController
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
-        
-        if (!$user->isCoach()){  //Comprend pas l'erreur mais ça marche :/
-            return $this->redirectToRoute('app_programme_index'); // Redirection vers la page de connexion
+
+        if (!$user->isCoach()) {
+            return $this->redirectToRoute('app_programme_index');
         }
+
 
         // Assigner l'ID de l'utilisateur connecté à createurId
         $programme->setCreateur($user);
@@ -50,20 +69,21 @@ class ProgrammeController extends AbstractController
 
             return $this->redirectToRoute('app_seance_type_new', [
                 'programmeid' => $programme->getId(),
-                'jour' => 1
-        ], Response::HTTP_SEE_OTHER);
+                'jour' => 0
+            ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('programme/new.html.twig', [
             'programme' => $programme,
             'form' => $form,
-        ]);
+        ]);        
+        
     }
 
 
 
-    #[Route('/show/{id}/follow/{action}', name: 'app_programme_suivreProgramme', methods: ['GET','POST'])]
-    public function suivreProg(Programme $programme, $action, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/follow', name: 'app_programme_suivreProgramme', methods: ['GET','POST'])]
+    public function suivreProg(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
     {
         $user=$this->getUser();
 
@@ -71,40 +91,74 @@ class ProgrammeController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        if ($action == 'join') {
-            $user->setProgSuivi($programme);
-        } else {
-            $user->setProgSuivi(null);
+        $action = $request->query->get('action');
+        $from = $request->query->get('from');
+
+        switch ($action) {
+            case 'join':
+                $user->setProgSuivi($programme);
+                break;
+
+            case 'drop':
+                $user->setProgSuivi(null);
+                break;  
+                   
         }
 
         $entityManager->flush();
-        return $this->redirectToRoute('app_programme_show', [
-            'id' => $programme->getId()
-        ]);        
+
+        switch ($from) {
+            case 'show':
+                return $this->redirectToRoute('app_programme_show', [
+                    'id' => $programme->getId()
+                ]); 
+
+            case 'index':
+                return $this->redirectToRoute('app_programme_index');
+                   
+        }
+               
     }
 
 
 
-    #[Route('/show/{id}/favorites/{action}', name: 'app_programme_enFavoris', methods: ['GET','POST'])]
-    public function enFavori(Programme $programme, $action, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/favorites', name: 'app_programme_enFavoris', methods: ['GET','POST'])]
+    public function enFavori(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        
+
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
 
-        if ($action == 'add') {
-            $programme->addEstFavori($user);
-        } else {
-            $programme->removeEstFavori($user);
+        $action = $request->query->get('action');
+        $from = $request->query->get('from');
+
+        switch ($action) {
+            case 'add':
+                $programme->addEstFavori($user);
+                break;
+
+            case 'remove':
+                $programme->removeEstFavori($user);
+                break;  
+                   
         }
 
         $entityManager->persist($programme);
         $entityManager->flush();
-        return $this->redirectToRoute('app_programme_show', [
-            'id' => $programme->getId()
-        ]);
+
+        switch ($from) {
+            case 'show':
+                return $this->redirectToRoute('app_programme_show', [
+                    'id' => $programme->getId()
+                ]);
+
+            case 'index':
+                return $this->redirectToRoute('app_programme_index');
+                   
+        }
+        
     }
     
     
@@ -127,6 +181,7 @@ class ProgrammeController extends AbstractController
     public function edit(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
+        $seanceType = $programme->getSeanceTypes();
         
         if (!$user) {
             return $this->redirectToRoute('app_login');
@@ -156,16 +211,19 @@ class ProgrammeController extends AbstractController
         return $this->render('programme/edit.html.twig', [
             'programme' => $programme,
             'form' => $form,
+            'seanceType' => $seanceType
         ]);        
     }
 
-    #[Route('/{id}', name: 'app_programme_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_programme_delete', methods: ['GET','POST'])]
     public function delete(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$programme->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($programme);
-            $entityManager->flush();
+        foreach ($programme->getSeanceTypes() as $seance){
+            $entityManager->remove($seance);
         }
+            
+        $entityManager->remove($programme);
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
     }

@@ -3,9 +3,9 @@
 {% block title %}New SeanceType{% endblock %}
 
 {% block body %}
-    <h1>Create new SeanceType</h1>
+    <h1>Créer une séance type pour le jour n° {{jour}} </h1>
 
     {{ include('seance_type/_form.html.twig') }}
 
-    <a href="{{ path('home') }}">Finir programme</a>
+    <a href="{{ path('app_programme_index') }}">Finir programme</a>
 {% endblock %}
