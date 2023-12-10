@@ -35,7 +35,7 @@ class ProgrammeRepository extends ServiceEntityRepository
 
 
 
-    public function search(string $search): array
+    public function findBySearch(string $search): array
     {
         return $this->createQueryBuilder('p')
             ->leftJoin('p.seanceTypes', 's')
@@ -49,12 +49,20 @@ class ProgrammeRepository extends ServiceEntityRepository
 
 
 
-    public function findByFilters($type, $nbJour, $dureeMax, $favoris, $mesprogs, $userId): array
+    public function findByFilters($search, $type, $nbJour, $dureeMax, $favoris, $mesprogs, $userId): array
     {
         $queryBuilder =$this->createQueryBuilder('p')
-            ->leftJoin('p.seanceTypes', 's')            // requis pour nbjour, dureemax
-            ->groupBy('p.id')                           // requis pour nbjour, dureemax
-            ->leftJoin('p.estFavori', 'u');             // requis pour favoris
+            ->leftJoin('p.seanceTypes', 's')
+            ->leftJoin('s.exercices', 'e')
+            ->leftJoin('p.estFavori', 'u')
+            ->groupBy('p.id');
+
+        if($search) {
+            // Filtre recherche
+            $queryBuilder->andWhere('p.libelle LIKE :search OR s.libelle LIKE :search OR e.nomExercice LIKE :search')
+                ->setParameter('search', '%'.$search.'%')
+                ->addOrderBy('p.libelle', 'DESC');
+        }
 
         if ($type) {
             // Filtre sur le type de programme

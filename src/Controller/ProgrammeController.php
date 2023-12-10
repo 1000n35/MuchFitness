@@ -26,13 +26,7 @@ class ProgrammeController extends AbstractController
         $favoris = $request->query->get('favoris');
         $mesprogs = $request->query->get('mesprogs');
 
-        if ($search) {
-            $programmes = $programmeRepository->search($search);
-        } else {
-            $programmes = $programmeRepository->findAll();
-        }
-
-        //$programmes = $programmeRepository->findByFilters($type, $nbJour, $dureeMax, $favoris, $mesprogs, $user->getId());
+        $programmes = $programmeRepository->findByFilters($search, $type, $nbJour, $dureeMax, $favoris, $mesprogs, $user->getId());
 
         return $this->render('programme/index.html.twig', [
             'programmes' => $programmes,
