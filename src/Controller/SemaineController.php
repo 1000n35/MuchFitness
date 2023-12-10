@@ -43,7 +43,7 @@ class SemaineController extends AbstractController
         }
 
         if(!$user->getProgSuivi()) { // si aucun prog suivi renvoie à l'index
-            return $this->redirectToRoute('app_semaine_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
         }
 
         $semaine->setProgramme($user->getProgSuivi());
