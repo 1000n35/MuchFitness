@@ -21,9 +21,9 @@
                 <td>{{ exercice.id }}</td>
                 <td>{{ exercice.nomExercice }}</td>
                 <td>{{ exercice.descriptif }}</td>
-                <td>{{ exercice.video }}</td>
+                <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
                 <td>
-                    <a href="{{ path('app_exercice_show', {'id': exercice.id}) }}">show</a>
+                    <a href="{{ path('app_exercice_show', {'id': exercice.id, 'seancetypeid': '-1'}) }}">show</a>
                     {% if app.user.getId() == exercice.getCreateur().getId()%}
                     <a href="{{ path('app_exercice_edit', {'id': exercice.id}) }}">edit</a>
                     {% endif %}

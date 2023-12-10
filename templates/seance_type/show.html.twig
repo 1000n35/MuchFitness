@@ -34,9 +34,28 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_seance_type_index') }}">back to list</a>
 
-    <a href="{{ path('app_seance_type_edit', {'id': seance_type.id}) }}">edit</a>
+    <h2>Exercices de la séance</h2>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Nom de l'exercice</th>
+                    <th>Descriptif</th>
+                    <th>Video</th>
+                    <th>Actions</th>
+                </tr>
+                {% for exercice in seance_type.exercices %}
+                    <tr>
+                        <td>{{ exercice.nomExercice }}</td>
+                        <td>{{ exercice.descriptif }}</td>
+                        <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
+                        <td>
+                        <a href = "{{ path('app_exercice_show', {'id': exercice.id, 'seancetypeid' : seance_type.id}) }}">Détail de l'exerice</a href>
+                        </td>
+                    </tr>
+                {% endfor %}
 
-    {{ include('seance_type/_delete_form.html.twig') }}
+            </tbody>
+        </table>
+        <a href = "{{ path('app_programme_show', {'id': seance_type.programme.id}) }}">Retour au programme</a href>
 {% endblock %}
