@@ -107,6 +107,15 @@
             {% if app.user is null %}
             <a href="/">Accueil</a>
             <a href="/login">Connexion</a>
+            <div class="form-check form-switch mx-4">
+            <input 
+                class="form-check-input p-2"
+                type="checkbox"
+                role="switch"
+                id="flexSwitchCheckChecked"
+                checked 
+                onclick="myfunction()">
+            </div>
             {% else %}
             <a href="/">Accueil</a>
             <a href="/programme">Programmes</a>
