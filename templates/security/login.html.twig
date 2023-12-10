@@ -23,12 +23,9 @@
 
     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Se connecter
-    </button>
+    <button class="btn btn-lg btn-primary" type="submit">Se connecter</button>
 
     <a>Pas encore membre ?</a>
     <a href="/registration">Créer un compte</a>
-
 </form>
 {% endblock %}

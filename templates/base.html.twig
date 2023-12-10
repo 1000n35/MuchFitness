@@ -124,6 +124,9 @@
                         {% endif %}
                         <a href="">Mes suivis</a>
                         <a href="{{ path('app_programme_index', {'favoris': 1}) }}">Programmes favoris</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('admin') }}">Administration</a>
+                        {% endif %}
                         <a href="{{ path('app_logout') }}">Se déconnecter</a>
                     </div>
                 </div>
