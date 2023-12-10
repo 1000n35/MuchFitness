@@ -56,8 +56,8 @@
                 <td>{{ programme.libelle }}</td>
                 <td>{{ programme.description }}</td>
                 <td>{{ programme.type }}</td>
-                <td>{{ programme.getSeanceTypes()|length }}</td>
-                <td>{{ programme.getCreateur().getUsername() }}</td>
+                <td>{{ programme.seanceTypes|length }}</td>
+                <td>{{ programme.createur.username }}</td>
                 <td>
                     
                     <a href="{{ path('app_programme_show', {'id': programme.id}) }}">détails</a>
@@ -87,7 +87,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">pas encore de programme</td>
+                <td colspan="6">pas encore de programme</td>
             </tr>
         {% endfor %}
         </tbody>

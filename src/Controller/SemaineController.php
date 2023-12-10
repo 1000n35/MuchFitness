@@ -17,8 +17,16 @@ class SemaineController extends AbstractController
     #[Route('/', name: 'app_semaine_index', methods: ['GET'])]
     public function index(SemaineRepository $semaineRepository): Response
     {
+        $dateNow = new \DateTime();
+        $user = $this->getUser();
+
+        if (!$user) { // si aucun user connecté renvoie à la page de connexion
+            return $this->redirectToRoute('app_login');
+        }
+
         return $this->render('semaine/index.html.twig', [
-            'semaines' => $semaineRepository->findAll(),
+            'semaines' => $semaineRepository->findByUser($user->getId()),
+            'dateNow' => $dateNow,
         ]);
     }
 
@@ -26,6 +34,21 @@ class SemaineController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $semaine = new Semaine();
+
+        $dateNow = new \DateTime();
+        $user = $this->getUser();
+
+        if (!$user) { // si aucun user connecté renvoie à la page de connexion
+            return $this->redirectToRoute('app_login');
+        }
+
+        if(!$user->getProgSuivi()) { // si aucun prog suivi renvoie à l'index
+            return $this->redirectToRoute('app_semaine_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        $semaine->setProgramme($user->getProgSuivi());
+        $semaine->setUser($user);
+
         $form = $this->createForm(SemaineType::class, $semaine);
         $form->handleRequest($request);
 
@@ -45,6 +68,12 @@ class SemaineController extends AbstractController
     #[Route('/{id}', name: 'app_semaine_show', methods: ['GET'])]
     public function show(Semaine $semaine): Response
     {
+        $user = $this->getUser();
+
+        if (!$user) { // si aucun user connecté renvoie à la page de connexion
+            return $this->redirectToRoute('app_login');
+        }
+
         return $this->render('semaine/show.html.twig', [
             'semaine' => $semaine,
         ]);
@@ -53,6 +82,12 @@ class SemaineController extends AbstractController
     #[Route('/{id}/edit', name: 'app_semaine_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Semaine $semaine, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+
+        if (!$user) { // si aucun user connecté renvoie à la page de connexion
+            return $this->redirectToRoute('app_login');
+        }
+        
         $form = $this->createForm(SemaineType::class, $semaine);
         $form->handleRequest($request);
 

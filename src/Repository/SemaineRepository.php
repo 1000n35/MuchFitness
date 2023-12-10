@@ -21,6 +21,18 @@ class SemaineRepository extends ServiceEntityRepository
         parent::__construct($registry, Semaine::class);
     }
 
+
+
+    public function findByUser($userId): array
+    {
+        return $this->createQueryBuilder('smn')
+            ->andWhere('smn.user = :userId')
+            ->setParameter('userId', $userId)
+            ->addOrderBy('smn.dateDebut', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Semaine[] Returns an array of Semaine objects
 //     */
