@@ -6,30 +6,33 @@
     <h1>Programme index</h1>
 
     <form>
+        <div>
+            <input placeholder="Rechercher" name="search" value="{{search}}">
+        </div>
+        <div>
+            <label for="type"> Type </label>
+            <select id="type" name="type">
+                <option {{ type == 0 ? 'selected' }} value="">--</option>
+                <option {{ type == "puissance" ? 'selected' }} value="puissance">Puissance</option>
+                <option {{ type == "hypertrophie" ? 'selected' }} value="hypertrophie">Hypertrophie</option>
+                <option {{ type == "endurance" ? 'selected' }} value="endurance">Endurance</option>
+            </select>
 
-        <label for="type"> Type </label>
-        <select id="type" name="type">
-            <option {{ type == 0 ? 'selected' }} value="">--</option>
-            <option {{ type == "puissance" ? 'selected' }} value="puissance">Puissance</option>
-            <option {{ type == "hypertrophie" ? 'selected' }} value="hypertrophie">Hypertrophie</option>
-            <option {{ type == "endurance" ? 'selected' }} value="endurance">Endurance</option>
-        </select>
+            <input placeholder="Nombre de Jours" name="nbJour" value="{{nbJour}}">
 
-        <input placeholder="Nombre de Jours" name="nbJour" value="{{nbJour}}">
+            <label for="dureeMax"> Durée Max </label>
+            <input id="dureeMax" type="time" name="dureeMax" value="{{dureeMax}}" placeholder="Duree Max">
 
-        <label for="dureeMax"> Durée Max </label>
-        <input id="dureeMax" type="time" name="dureeMax" value="{{dureeMax}}" placeholder="Duree Max">
+            <input id="favoris" type="checkbox" name="favoris" value="1">
+            <label for="favoris"> Favoris </label>
 
-        <input id="favoris" type="checkbox" name="favoris" value="1">
-        <label for="favoris"> Favoris </label>
+            {% if app.user.isCoach() %}
+                <input id="mesprogs" type="checkbox" name="mesprogs" value="1">
+                <label for="mesprogs"> Mes programmes </label>
+            {% endif %}
 
-        {% if app.user.isCoach() %}
-            <input id="mesprogs" type="checkbox" name="mesprogs" value="1">
-            <label for="mesprogs"> Mes programmes </label>
-        {% endif %}
-
-        <input type="submit" value="Valider">
-        
+            <input type="submit" value="Valider">
+        </div>    
     </form>
     
     {# {% if app.user %}
@@ -42,6 +45,7 @@
                 <th>Libelle</th>
                 <th>Description</th>
                 <th>Type</th>
+                <th>Jours</th>
                 <th>Créateur</th>
                 <th>actions</th>
             </tr>
@@ -52,6 +56,7 @@
                 <td>{{ programme.libelle }}</td>
                 <td>{{ programme.description }}</td>
                 <td>{{ programme.type }}</td>
+                <td>{{ programme.getSeanceTypes()|length }}</td>
                 <td>{{ programme.getCreateur().getUsername() }}</td>
                 <td>
                     

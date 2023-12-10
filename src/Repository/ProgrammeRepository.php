@@ -35,6 +35,20 @@ class ProgrammeRepository extends ServiceEntityRepository
 
 
 
+    public function search(string $search): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.seanceTypes', 's')
+            ->leftJoin('s.exercices', 'e')
+            ->andWhere('p.libelle LIKE :search OR s.libelle LIKE :search OR e.nomExercice LIKE :search')
+            ->setParameter('search', '%'.$search.'%')
+            ->addOrderBy('p.libelle', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
     public function findByFilters($type, $nbJour, $dureeMax, $favoris, $mesprogs, $userId): array
     {
         $queryBuilder =$this->createQueryBuilder('p')
@@ -62,16 +76,17 @@ class ProgrammeRepository extends ServiceEntityRepository
 
         if ($favoris) {
             // Filtre favoris
-            $queryBuilder->andWhere(':userId MEMBER OF p.estFavori')
-                ->setParameter('userId', $userId);
+            $queryBuilder->andWhere(':userId MEMBER OF p.estFavori');
+            $queryBuilder->setParameter('userId', $userId);
         }
 
         if ($mesprogs) {
             // Filtre mes programmes
-            $queryBuilder->andWhere('p.createur = :userId')
-                ->setParameter('userId', $userId);
+            $queryBuilder->andWhere('p.createur = :userId');
+            $queryBuilder->setParameter('userId', $userId);
         }
     
+        
         return $queryBuilder->getQuery()->getResult();
 
     }
