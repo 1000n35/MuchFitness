@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
     {% endblock %}
     <style>
         body {
-            background-color: lightgray;
+            background-color: light;
         }
 
         header {
@@ -122,9 +122,25 @@
                     <a href="{{ path('app_logout') }}">Se déconnecter</a>
                 </div>
             </div>
+            <div class="form-check form-switch mx-4">
+            <input 
+                class="form-check-input p-2"
+                type="checkbox"
+                role="switch"
+                id="flexSwitchCheckChecked"
+                checked 
+                onclick="myfunction()">
+            </div>
             {% endif %}
         </nav>
     </header>
+    <script>
+    function myfunction(){
+        var element=document.body;
+        element.dataset.bsTheme =
+            element.dataset.bsTheme == "light" ? "dark" : "light";
+    }
+    </script>
     {% block body %}
     {% endblock %}
 </body>
