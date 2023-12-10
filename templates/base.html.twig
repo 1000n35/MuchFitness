@@ -120,6 +120,7 @@
                         <a href="/user/{{ app.user.getId() }}">Mon profil</a>
                         {% if app.user.isCoach() %}
                             <a href="{{ path('app_programme_index', {'mesprogs': 1}) }}">Mes programmes</a>
+                            <a href="{{ path('app_exercice_index') }}">Mes exercices</a>
                         {% endif %}
                         <a href="">Mes suivis</a>
                         <a href="{{ path('app_programme_index', {'favoris': 1}) }}">Programmes favoris</a>

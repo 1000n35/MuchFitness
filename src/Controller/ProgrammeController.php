@@ -181,6 +181,7 @@ class ProgrammeController extends AbstractController
     public function edit(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
+        $seanceType = $programme->getSeanceTypes();
         
         if (!$user) {
             return $this->redirectToRoute('app_login');
@@ -210,16 +211,19 @@ class ProgrammeController extends AbstractController
         return $this->render('programme/edit.html.twig', [
             'programme' => $programme,
             'form' => $form,
+            'seanceType' => $seanceType
         ]);        
     }
 
-    #[Route('/{id}', name: 'app_programme_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_programme_delete', methods: ['GET','POST'])]
     public function delete(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$programme->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($programme);
-            $entityManager->flush();
+        foreach ($programme->getSeanceTypes() as $seance){
+            $entityManager->remove($seance);
         }
+            
+        $entityManager->remove($programme);
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
     }

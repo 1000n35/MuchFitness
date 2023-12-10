@@ -4,10 +4,37 @@
 
 {% block body %}
     <h1>Edit Programme</h1>
+     {{ include('programme/_form.html.twig', {'button_label': 'Update'}) }}
 
-    {{ include('programme/_form.html.twig', {'button_label': 'Update'}) }}
+    <h2>Séances</h2>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Libelle</th>
+                    <th>Split</th>
+                    <th>Descriptif</th>
+                    <th>Durée de la séance</th>
+                    <th>Actions</th>
+                </tr>
+                {% for seanceType in programme.seanceTypes %}
+                    <tr>
+                        <td>{{ seanceType.libelle }}</td>
+                        <td>{{ seanceType.split }}</td>
+                        <td>{{ seanceType.descriptif }}</td>
+                        <td>{{ seanceType.duree|date('H:i:s') }}</td>
+                        <td>
+                        <a href = "{{ path('app_seance_type_show', {'id': seanceType.id}) }}">Détail de la séance</a href>
+                        <a href = "{{ path('app_seance_type_delete', {'id': seanceType.id}) }}">Supprimer la séance</a href>
+                        </td>
+                    </tr>
+                {% endfor %}
 
-    <a href="{{ path('app_programme_index') }}">back to list</a>
+            </tbody>
+        </table>
 
-    {{ include('programme/_delete_form.html.twig') }}
+
+   
+
+    <a href="{{ path('app_programme_index') }}">Revenir à la liste</a>
+
 {% endblock %}

@@ -87,14 +87,15 @@ class SeanceTypeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_seance_type_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_seance_type_delete', methods: ['GET','POST'])]
     public function delete(Request $request, SeanceType $seanceType, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$seanceType->getId(), $request->request->get('_token'))) {
+        $programmeid = $seanceType->getProgramme()->getId();
             $entityManager->remove($seanceType);
             $entityManager->flush();
-        }
 
-        return $this->redirectToRoute('app_seance_type_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_programme_edit', [
+            'id' => $programmeid
+        ], Response::HTTP_SEE_OTHER);
     }
 }
