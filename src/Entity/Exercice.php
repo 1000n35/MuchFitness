@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ExerciceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExerciceRepository::class)]
@@ -18,8 +19,11 @@ class Exercice
     #[ORM\Column(length: 255)]
     private ?string $nomExercice = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $video = null;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $descriptif = null;
+
+    #[ORM\Column(type: 'string')]
+    private string $videoFilename;
 
     #[ORM\ManyToOne(inversedBy: 'exercices')]
     #[ORM\JoinColumn(nullable: false)]
@@ -50,17 +54,18 @@ class Exercice
         return $this;
     }
 
-    public function getVideo(): ?string
+    public function getDescriptif(): ?string
     {
-        return $this->video;
+        return $this->descriptif;
     }
 
-    public function setVideo(string $video): static
+    public function setDescriptif(string $descriptif): static
     {
-        $this->video = $video;
+        $this->descriptif = $descriptif;
 
         return $this;
     }
+
 
     public function getCreateur(): ?User
     {
@@ -94,6 +99,18 @@ class Exercice
     public function removeContient(SeanceType $contient): static
     {
         $this->contient->removeElement($contient);
+
+        return $this;
+    }
+
+    public function getVideoFilename(): string
+    {
+        return $this->videoFilename;
+    }
+
+    public function setVideoFilename(string $videoFilename): self
+    {
+        $this->videoFilename = $videoFilename;
 
         return $this;
     }

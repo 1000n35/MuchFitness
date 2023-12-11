@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Séance{% endblock %}
+
+{% block body %}
+    <h1>Modifier Séance</h1>
+
+    {{ include('seance_type/_form.html.twig', {'button_label': 'Valider'}) }}
+
+    <a href="{{ path('app_seance_type_show', {'id': seance_type.id}) }}">Annuler</a>
+
+    {{ include('seance_type/_delete_form.html.twig') }}
+{% endblock %}

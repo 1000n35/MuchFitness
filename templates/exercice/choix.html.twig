@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Choix création/utilisation existants{% endblock %}
+
+{% block body %}
+    <h2>Exercices disponibles à l'ajout</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Descriptif</th>
+                <th>Video</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for exercice in exercices %}
+        {% if exercice.getCreateur.getId == app.user.getId() and not exercice.getContient.contains(seancetype)%}
+        <tr>
+                <td>{{ exercice.id }}</td>
+                <td>{{ exercice.nomExercice }}</td>
+                <td>{{ exercice.descriptif }}</td>
+                <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
+                <td>
+                    {#<a href="{{ path('app_exercice_show', {'id': exercice.id}) }}">show</a>#}
+                    <a href="{{ path('app_exercice_ajout_retire', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid, 'exerciceid': exercice.id}) }}">ajouter</a>
+                </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+    <h2>Exercices déjà dans la séance</h2>
+    <table class="table">
+        <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Descriptif</th>
+                    <th>Video</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {% for exercicePres in exercicePresents %}
+            <tr>
+                <td>{{ exercicePres.id }}</td>
+                <td>{{ exercicePres.nomExercice }}</td>
+                <td>{{ exercicePres.descriptif }}</td>
+                <td><a href="{{ asset('uploads/video/' ~ exercicePres.videoFilename) }}">Voir la vidéo</a></td>
+                <td>
+                    <a href="{{ path('app_exercice_ajout_retire', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid, 'exerciceid': exercicePres.id}) }}">retirer</a>
+                </td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    <a href="{{ path('app_exercice_creer_exo', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid}) }}">Créer un exercice pour cette séance</a>
+
+    <a href="{{ path('app_seance_type_new', {'programmeid': programmeid, 'jour': jour}) }}">Valider la séance</a>
+
+    {% endblock %}

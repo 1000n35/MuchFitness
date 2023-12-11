@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Programme;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProgrammeType extends AbstractType
@@ -14,9 +15,14 @@ class ProgrammeType extends AbstractType
         $builder
             ->add('libelle')
             ->add('description')
-            ->add('type')
-            ->add('createur')
-            ->add('estFavori')
+            ->add('type', ChoiceType::class, [
+                'choices' => [
+                    'Puissance' => 'Puissance',
+                    'Hypertrophie' => 'Hypertrophie',
+                    'Endurance' => 'Endurance',
+                ],
+                'placeholder' => 'Choisir un type',
+            ])
         ;
     }
 

@@ -1,13 +1,41 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit SuiviSeance{% endblock %}
+{% block title %}Modifier Résultats{% endblock %}
 
 {% block body %}
-    <h1>Edit SuiviSeance</h1>
+    <h1>Modifier mes résultats</h1>
 
-    {{ include('suivi_seance/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('suivi_seance/_form.html.twig', {'button_label': 'Valider'}) }}
 
-    <a href="{{ path('app_suivi_seance_index') }}">back to list</a>
+    <a href="{{ path('app_suivi_seance_show', {'id': suivi_seance.id, 'semaineId': semaine.id}) }}">Annuler</a>
 
-    {{ include('suivi_seance/_delete_form.html.twig') }}
+    {{ include('suivi_seance/_delete_form.html.twig', {'semaineId': semaine.id}) }}
+
+    <h2>Exercices</h2>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Nom</th>
+                    <th>Descriptif</th>
+                    <th>Video</th>
+                    <th></th>
+                </tr>
+                {% for exercice in seance.exercices %}
+                    <tr>
+                        <td>{{ exercice.nomExercice }}</td>
+                        <td>{{ exercice.descriptif }}</td>
+                        <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
+                        <td>
+                            <a href = "{{ path('app_exercice_show', {'id': exercice.id, 'seancetypeid' : seance.id}) }}">Voir en détail</a href>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">aucun exercice</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        
 {% endblock %}

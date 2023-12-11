@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ exercice.nomExercice }}{% endblock %}
+
+{% block body %}
+    <h1>{{ exercice.nomExercice }}</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Descriptif</th>
+                <td>{{ exercice.descriptif }}</td>
+            </tr>
+            <tr>
+                <th>Video</th>
+                <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if app.user.getId() == exercice.getCreateur().getId()%}
+        <a href="{{ path('app_exercice_edit', {'id': exercice.id}) }}">Modifier</a>
+
+        {{ include('exercice/_delete_form.html.twig') }}
+    {% endif %}
+
+    <a href = "{{ path('app_seance_type_show', {'id': seancetypeid}) }}">Retour à la séance</a href>
+{% endblock %}

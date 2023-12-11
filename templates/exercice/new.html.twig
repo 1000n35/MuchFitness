@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel Exercice{% endblock %}
+
+{% block body %}
+    <h1>Nouvel Exercice</h1>
+
+    {{ include('exercice/_form.html.twig') }}
+    <a href="{{ path('app_exercice_index') }}">Annuler</a>
+{% endblock %}

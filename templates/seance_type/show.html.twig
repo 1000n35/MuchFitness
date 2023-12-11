@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ seance_type.libelle }}{% endblock %}
+
+{% block body %}
+    <h1>{{ seance_type.libelle }}</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Split</th>
+                <td>{{ seance_type.split }}</td>
+            </tr>
+            <tr>
+                <th>Jour</th>
+                <td>{{ seance_type.jour }}</td>
+            </tr>
+            <tr>
+                <th>Descriptif</th>
+                <td>{{ seance_type.descriptif }}</td>
+            </tr>
+            <tr>
+                <th>Duree</th>
+                <td>{{ seance_type.duree ? seance_type.duree|date('H:i') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <h2>Exercices</h2>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Nom</th>
+                    <th>Video</th>
+                    <th></th>
+                </tr>
+                {% for exercice in seance_type.exercices %}
+                    <tr>
+                        <td>{{ exercice.nomExercice }}</td>
+                        <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
+                        <td>
+                        <a href = "{{ path('app_exercice_show', {'id': exercice.id, 'seancetypeid' : seance_type.id}) }}">Voir en détail</a href>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">aucun exercice</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        <a href = "{{ path('app_programme_show', {'id': seance_type.programme.id}) }}">Retour au programme</a href>
+{% endblock %}

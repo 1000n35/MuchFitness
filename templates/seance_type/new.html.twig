@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Séance{% endblock %}
+
+{% block body %}
+    <h1>Nouvelle Séance // Jour {{jour}} </h1>
+
+    {{ include('seance_type/_form.html.twig') }}
+
+    <a href="{{ path('app_programme_index') }}">Valider le programme</a>
+{% endblock %}

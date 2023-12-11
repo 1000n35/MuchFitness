@@ -16,13 +16,16 @@ class SeanceType
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column]
+    private ?int $jour = null;
+
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $objectif = null;
+    private ?string $split = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $descriptif = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
@@ -49,6 +52,18 @@ class SeanceType
         return $this->id;
     }
 
+    public function getJour(): ?int
+    {
+        return $this->jour;
+    }
+
+    public function setJour(int $jour): static
+    {
+        $this->jour = $jour;
+
+        return $this;
+    }
+
     public function getLibelle(): ?string
     {
         return $this->libelle;
@@ -61,14 +76,14 @@ class SeanceType
         return $this;
     }
 
-    public function getObjectif(): ?string
+    public function getSplit(): ?string
     {
-        return $this->objectif;
+        return $this->split;
     }
 
-    public function setObjectif(string $objectif): static
+    public function setSplit(string $split): static
     {
-        $this->objectif = $objectif;
+        $this->split = $split;
 
         return $this;
     }

@@ -19,7 +19,7 @@ class Programme
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
@@ -38,11 +38,15 @@ class Programme
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'progFavoris')]
     private Collection $estFavori;
 
+    #[ORM\OneToMany(mappedBy: 'progSuivi', targetEntity: User::class)]
+    private Collection $pratiquants;
+
     public function __construct()
     {
         $this->semaines = new ArrayCollection();
         $this->seanceTypes = new ArrayCollection();
         $this->estFavori = new ArrayCollection();
+        $this->pratiquants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -178,6 +182,36 @@ class Programme
     public function removeEstFavori(User $estFavori): static
     {
         $this->estFavori->removeElement($estFavori);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getPratiquants(): Collection
+    {
+        return $this->pratiquants;
+    }
+
+    public function addPratiquant(User $pratiquant): static
+    {
+        if (!$this->pratiquants->contains($pratiquant)) {
+            $this->pratiquants->add($pratiquant);
+            $pratiquant->setProgSuivi($this);
+        }
+
+        return $this;
+    }
+
+    public function removePratiquant(User $pratiquant): static
+    {
+        if ($this->pratiquants->removeElement($pratiquant)) {
+            // set the owning side to null (unless already changed)
+            if ($pratiquant->getProgSuivi() === $this) {
+                $pratiquant->setProgSuivi(null);
+            }
+        }
 
         return $this;
     }

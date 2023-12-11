@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Exercice{% endblock %}
+
+{% block body %}
+    <h1>Modifier Exercice</h1>
+
+    {{ include('exercice/_form.html.twig', {'button_label': 'Valider'}) }}
+
+    <a href="{{ path('app_exercice_index') }}">Annuler</a>
+
+    {{ include('exercice/_delete_form.html.twig') }}
+{% endblock %}
