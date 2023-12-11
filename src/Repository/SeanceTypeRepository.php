@@ -21,6 +21,19 @@ class SeanceTypeRepository extends ServiceEntityRepository
         parent::__construct($registry, SeanceType::class);
     }
 
+
+
+    public function findById($id): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
 //    /**
 //     * @return SeanceType[] Returns an array of SeanceType objects
 //     */
@@ -45,15 +58,4 @@ class SeanceTypeRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-
-        public function findById($value): array
-        {
-            return $this->createQueryBuilder('p')
-                ->andWhere('p.id = :val')
-                ->setParameter('val', $value)
-                ->getQuery()
-                ->getResult()
-            ;
-}
-
 }

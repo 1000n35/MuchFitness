@@ -1,20 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Semaine{% endblock %}
+{% block title %}Suivi{% endblock %}
 
 {% block body %}
-    <h1>Semaine</h1>
+    <h1>Suivi du {{ semaine.dateDebut ? semaine.dateDebut|date('d/m/Y'): '' }} au {{ semaine.dateDebut ? semaine.dateDebut|date_modify('+' ~ (semaine.programme.seanceTypes|length - 1) ~ 'days')|date('d/m/Y'): '' }}</h1>
+    <h2>Programme: {{ semaine.programme.libelle ? semaine.programme.libelle: '' }}</h2>
 
     <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Séance</th>
+                <th>Objectifs</th>
+                <th>Résultats</th>
+            </tr>
+        </thead>
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ semaine.id }}</td>
-            </tr>
-            <tr>
-                <th>DateDebut</th>
-                <td>{{ semaine.dateDebut ? semaine.dateDebut|date('Y-m-d') : '' }}</td>
-            </tr>
+            {% for seance in semaine.programme.seanceTypes %}
+                <tr>
+                    <td>{{semaine.dateDebut ? semaine.dateDebut|date_modify('+' ~ (seance.jour - 1) ~ 'days')|date('d/m/Y'): ''}}</td>
+                    <td>{{seance.libelle}}</td>
+                    <td>
+                            {% set found = null %}
+                            {% for objectif in semaine.objectifSeances %}
+                                {% if objectif.jourObjectif == seance.jour %}
+                                    {% set found = objectif %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if found %}
+                                <a href = "{{ path('app_objectif_seance_show', {'semaineId': semaine.id, 'id': found.id}) }}">voir mes objectifs</a>
+                            {% else %}
+                                <a href = "{{ path('app_objectif_seance_new', {'semaineId': semaine.id, 'seanceId': seance.id}) }}">ajouter mes objectifs</a>
+                            {% endif %}
+                    </td>
+                    <td>
+                            {% set found = null %}
+                            {% for suivi in semaine.suiviSeances %}
+                                {% if suivi.jourSeance == seance.jour %}
+                                    {% set found = suivi %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if found %}
+                                <a href = "{{ path('app_suivi_seance_show', {'semaineId': semaine.id, 'id': found.id}) }}">voir mes résultats</a>
+                            {% else %}
+                                <a href = "{{ path('app_suivi_seance_new', {'semaineId': semaine.id, 'seanceId': seance.id}) }}">ajouter mes résultats</a>
+                            {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">
+                        <a>Aucune séance</a>
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 

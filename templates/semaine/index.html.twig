@@ -1,35 +1,48 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Semaine index{% endblock %}
+{% block title %}Mes suivis{% endblock %}
 
 {% block body %}
-    <h1>Semaine index</h1>
+    <h1>Mes suivis</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>DateDebut</th>
+                <th>Date</th>
+                <th>Nombre de jours</th>
+                <th>Programme</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for semaine in semaines %}
-            <tr>
-                <td>{{ semaine.id }}</td>
-                <td>{{ semaine.dateDebut ? semaine.dateDebut|date('Y-m-d') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_semaine_show', {'id': semaine.id}) }}">show</a>
-                    <a href="{{ path('app_semaine_edit', {'id': semaine.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
+            {% if semaines is empty %}
+                <tr>
+                    <td colspan="4">
+                        <a href="{{ path('app_semaine_new') }}">Démarrer un suivi</a>
+                    </td>
+                </tr>
+            {% else %}
+                {% set lastSem = semaines|first %}
+                {% if dateNow >= lastSem.dateDebut|date_modify('+' ~ lastSem.programme.seanceTypes|length ~ 'days') %}
+                    <tr>
+                        <td colspan="4">
+                            <a href="{{ path('app_semaine_new') }}">Démarrer un suivi</a>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% for semaine in semaines %}
+                    <tr>
+                        <td>{{ semaine.dateDebut ? semaine.dateDebut|date('d/m/Y'): '' }} - {{ semaine.dateDebut ? semaine.dateDebut|date_modify('+' ~ (semaine.programme.seanceTypes|length - 1) ~ 'days')|date('d/m/Y'): '' }}</td>
+                        <td>{{ semaine.programme.seanceTypes|length }}</td>
+                        <td>{{ semaine.programme.libelle }}</td>
+                        <td>
+                            <a href="{{ path('app_semaine_show', {'id': semaine.id}) }}">show</a>
+                            <a href="{{ path('app_semaine_edit', {'id': semaine.id}) }}">edit</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_semaine_new') }}">Create new</a>
 {% endblock %}

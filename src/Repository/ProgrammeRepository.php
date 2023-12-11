@@ -23,38 +23,12 @@ class ProgrammeRepository extends ServiceEntityRepository
 
 
 
-    public function findFavoritesByUser($userId): array
-    {
-        return $this->createQueryBuilder('p')
-            ->leftJoin('p.estFavori', 'u')
-            ->andWhere(':userId MEMBER OF p.estFavori')
-            ->setParameter('userId', $userId)
-            ->getQuery()
-            ->getResult();
-    }
-
-
-
-    public function findBySearch(string $search): array
-    {
-        return $this->createQueryBuilder('p')
-            ->leftJoin('p.seanceTypes', 's')
-            ->leftJoin('s.exercices', 'e')
-            ->andWhere('p.libelle LIKE :search OR s.libelle LIKE :search OR e.nomExercice LIKE :search')
-            ->setParameter('search', '%'.$search.'%')
-            ->addOrderBy('p.libelle', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
-
-
     public function findByFilters($search, $type, $nbJour, $dureeMax, $favoris, $mesprogs, $userId): array
     {
         $queryBuilder =$this->createQueryBuilder('p')
-            ->leftJoin('p.seanceTypes', 's')
-            ->leftJoin('s.exercices', 'e')
-            ->leftJoin('p.estFavori', 'u')
+            ->leftJoin('p.seanceTypes', 's')            // recherche, nb jour, duree max
+            ->leftJoin('s.exercices', 'e')              // recherche
+            ->leftJoin('p.estFavori', 'u')              // favoris
             ->groupBy('p.id');
 
         if($search) {

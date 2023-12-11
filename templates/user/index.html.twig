@@ -14,7 +14,7 @@
             <p>Pseudo : {{ user.username }}</p>
             <p>Nom : {{ app.user.getNom() }}</p>
             <p>Prénom : {{ app.user.getPrenom() }}</p>
-            <p>Date de Naissance : {{ user.dateNaissance|date('Y-m-d H:i:s') }}</p>
+            <p>Date de Naissance : {{ user.dateNaissance|date('d/m/Y') }}</p>
             <p>Téléphone : {{ app.user.getTelephone() }}</p>
 
     {% if user.imageName %}
