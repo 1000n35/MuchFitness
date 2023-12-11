@@ -30,12 +30,13 @@ class SemaineController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/new', name: 'app_semaine_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, SemaineRepository $semaineRepository, EntityManagerInterface $entityManager): Response
     {
         $semaine = new Semaine();
 
-        $dateNow = new \DateTime();
         $user = $this->getUser();
 
         if (!$user) { // si aucun user connecté renvoie à la page de connexion
@@ -44,6 +45,13 @@ class SemaineController extends AbstractController
 
         if(!$user->getProgSuivi()) { // si aucun prog suivi renvoie à l'index
             return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        $dateNow = new \DateTime();
+        $lastSemaine = $semaineRepository->findByUser($user)[0];
+
+        if($dateNow < $lastSemaine->getDateDebut()->modify('+' . count($lastSemaine->getProgramme()->getSeanceTypes()) . 'days')) {
+            return $this->redirectToRoute('app_semaine_index', [], Response::HTTP_SEE_OTHER);
         }
 
         $semaine->setProgramme($user->getProgSuivi());
@@ -65,6 +73,8 @@ class SemaineController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/{id}', name: 'app_semaine_show', methods: ['GET'])]
     public function show(Semaine $semaine): Response
     {
@@ -74,10 +84,16 @@ class SemaineController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        if ($user != $semaine->getUser()) {
+            return $this->redirectToRoute('app_semaine_index', [], Response::HTTP_SEE_OTHER);
+        }
+
         return $this->render('semaine/show.html.twig', [
             'semaine' => $semaine,
         ]);
     }
+
+
 
     #[Route('/{id}/edit', name: 'app_semaine_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Semaine $semaine, EntityManagerInterface $entityManager): Response
@@ -87,6 +103,12 @@ class SemaineController extends AbstractController
         if (!$user) { // si aucun user connecté renvoie à la page de connexion
             return $this->redirectToRoute('app_login');
         }
+
+        if ($user != $semaine->getUser()) {
+            return $this->redirectToRoute('app_semaine_show', [
+                'id' => $semaine->getId(),
+            ], Response::HTTP_SEE_OTHER);
+        }
         
         $form = $this->createForm(SemaineType::class, $semaine);
         $form->handleRequest($request);
@@ -94,7 +116,9 @@ class SemaineController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_semaine_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_semaine_show', [
+                'id' => $semaine->getId(),
+            ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('semaine/edit.html.twig', [
@@ -103,13 +127,13 @@ class SemaineController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/{id}', name: 'app_semaine_delete', methods: ['POST'])]
     public function delete(Request $request, Semaine $semaine, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$semaine->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($semaine);
-            $entityManager->flush();
-        }
+        $entityManager->remove($semaine);
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_semaine_index', [], Response::HTTP_SEE_OTHER);
     }

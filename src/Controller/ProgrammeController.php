@@ -26,7 +26,11 @@ class ProgrammeController extends AbstractController
         $favoris = $request->query->get('favoris');
         $mesprogs = $request->query->get('mesprogs');
 
-        $programmes = $programmeRepository->findByFilters($search, $type, $nbJour, $dureeMax, $favoris, $mesprogs, $user->getId());
+        if (!$user) {
+            $programmes = $programmeRepository->findAll();
+        } else {
+            $programmes = $programmeRepository->findByFilters($search, $type, $nbJour, $dureeMax, $favoris, $mesprogs, $user->getId());
+        }
 
         return $this->render('programme/index.html.twig', [
             'programmes' => $programmes,
@@ -195,7 +199,7 @@ class ProgrammeController extends AbstractController
         if ($user != $programme->getCreateur()) {
             return $this->redirectToRoute('app_programme_show', [
                 'id' => $programme->getId()
-            ]);
+            ], Response::HTTP_SEE_OTHER);
         }
 
         $form = $this->createForm(ProgrammeType::class, $programme);
@@ -204,7 +208,9 @@ class ProgrammeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_programme_show', [
+                'id' => $programme->getId()
+            ]);
         }
 
         return $this->render('programme/edit.html.twig', [

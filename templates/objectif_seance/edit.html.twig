@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit ObjectifSeance{% endblock %}
+{% block title %}Modifier Objectifs{% endblock %}
 
 {% block body %}
-    <h1>Edit ObjectifSeance</h1>
+    <h1>Modifier mes objectifs</h1>
 
     {{ include('objectif_seance/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_objectif_seance_index') }}">back to list</a>
+    <a href="{{ path('app_objectif_seance_show', {'id': objectif_seance.id, 'semaineId': semaine.id}) }}">annuler</a>
 
-    {{ include('objectif_seance/_delete_form.html.twig') }}
+    {{ include('objectif_seance/_delete_form.html.twig', {'semaineId': semaine.id}) }}
 {% endblock %}

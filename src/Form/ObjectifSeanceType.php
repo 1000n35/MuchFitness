@@ -12,9 +12,7 @@ class ObjectifSeanceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('jourObjectif')
             ->add('descriptif')
-            ->add('semaine')
         ;
     }
 

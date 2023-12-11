@@ -23,6 +23,18 @@ class SemaineRepository extends ServiceEntityRepository
 
 
 
+    public function findById($id): array
+    {
+        return $this->createQueryBuilder('smn')
+            ->andWhere('smn.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
+
     public function findByUser($userId): array
     {
         return $this->createQueryBuilder('smn')

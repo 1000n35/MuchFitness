@@ -12,9 +12,7 @@ class SuiviSeanceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('jourSeance')
             ->add('descriptif')
-            ->add('semaine')
         ;
     }
 
