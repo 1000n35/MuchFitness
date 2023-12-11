@@ -1,19 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ObjectifSeance{% endblock %}
+{% block title %}Objectifs{% endblock %}
 
 {% block body %}
-    <h1>ObjectifSeance</h1>
+    <h1>Objectifs</h1>
 
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ objectif_seance.id }}</td>
-            </tr>
-            <tr>
-                <th>JourObjectif</th>
-                <td>{{ objectif_seance.jourObjectif }}</td>
+                <th>Date</th>
+                <td>{{ semaine.dateDebut|date_modify('+' ~ (objectif_seance.jourObjectif - 1) ~ 'days')|date('d/m/Y') }}</td>
             </tr>
             <tr>
                 <th>Descriptif</th>
@@ -22,9 +18,37 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_objectif_seance_index') }}">back to list</a>
+    <a href="{{ path('app_semaine_show', {'id': semaine.id}) }}">Retour au suivi</a>
 
-    <a href="{{ path('app_objectif_seance_edit', {'id': objectif_seance.id}) }}">edit</a>
+    <a href="{{ path('app_objectif_seance_edit', {'id': objectif_seance.id, 'semaineId': semaine.id}) }}">Modifier</a>
 
-    {{ include('objectif_seance/_delete_form.html.twig') }}
+    {{ include('objectif_seance/_delete_form.html.twig', {'semaineId': semaine.id}) }}
+
+    <h2>Exercices</h2>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Nom</th>
+                    <th>Descriptif</th>
+                    <th>Video</th>
+                    <th></th>
+                </tr>
+                {% for exercice in seance.exercices %}
+                    <tr>
+                        <td>{{ exercice.nomExercice }}</td>
+                        <td>{{ exercice.descriptif }}</td>
+                        <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
+                        <td>
+                            <a href = "{{ path('app_exercice_show', {'id': exercice.id, 'seancetypeid' : seance.id}) }}">Voir en détail</a href>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">aucun exercice</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        
 {% endblock %}

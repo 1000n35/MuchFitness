@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Programme;
-use App\Entity\User;
 use App\Form\ProgrammeType;
 use App\Repository\ProgrammeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,92 +10,225 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\SecurityBundle\Security;
 
 #[Route('/programme')]
 class ProgrammeController extends AbstractController
 {
     #[Route('/', name: 'app_programme_index', methods: ['GET'])]
-    public function index(ProgrammeRepository $programmeRepository): Response
+    public function index(Request $request, ProgrammeRepository $programmeRepository): Response
     {
+        $user = $this->getUser();
+
+        $search = $request->query->get('search');
+        $type = $request->query->get('type');
+        $nbJour = $request->query->get('nbJour');
+        $dureeMax = $request->query->get('dureeMax');
+        $favoris = $request->query->get('favoris');
+        $mesprogs = $request->query->get('mesprogs');
+
+        if (!$user) {
+            $programmes = $programmeRepository->findAll();
+        } else {
+            $programmes = $programmeRepository->findByFilters($search, $type, $nbJour, $dureeMax, $favoris, $mesprogs, $user->getId());
+        }
+
         return $this->render('programme/index.html.twig', [
-            'programmes' => $programmeRepository->findAll(),
+            'programmes' => $programmes,
+            'search' => $search,
+            'type' => $type,
+            'nbJour' => $nbJour,
+            'dureeMax' => $dureeMax,
+            'favoris' => $favoris,
+            'mesprogs' => $mesprogs,
         ]);
+
     }
 
     #[Route('/new', name: 'app_programme_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, Security $security, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $programme = new Programme();
 
         $user = $this->getUser();
 
-
-        if ($user) {
-            
-            if (!$user->isIsCoach()){  //Comprend pas l'erreur mais ça marche :/
-                return $this->redirectToRoute('home'); // Redirection vers la page de connexion
-            }
-
-
-            // Assigner l'ID de l'utilisateur connecté à createurId
-            $programme->setCreateur($user);
-
-            // Créer le formulaire
-            $form = $this->createForm(ProgrammeType::class, $programme);
-            $form->handleRequest($request);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                $entityManager->persist($programme);
-                $entityManager->flush();
-
-                return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
-            }
-
-            return $this->render('programme/new.html.twig', [
-                'programme' => $programme,
-                'form' => $form,
-            ]);
-        } else {
-            // Gérer le cas où aucun utilisateur n'est connecté
-            // Redirection vers une page d'authentification, par exemple
-            return $this->redirectToRoute('app_login'); // Redirection vers la page de connexion
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
         }
+
+        if (!$user->isCoach()) {
+            return $this->redirectToRoute('app_programme_index');
+        }
+
+        // Assigner l'ID de l'utilisateur connecté à createurId
+        $programme->setCreateur($user);
+
+        // Créer le formulaire
+        $form = $this->createForm(ProgrammeType::class, $programme);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($programme);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_seance_type_new', [
+                'programmeid' => $programme->getId(),
+                'jour' => 0
+            ], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('programme/new.html.twig', [
+            'programme' => $programme,
+            'form' => $form,
+        ]);        
+        
     }
+
+
+
+    #[Route('/{id}/follow', name: 'app_programme_suivreProgramme', methods: ['GET','POST'])]
+    public function suivreProg(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
+    {
+        $user=$this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $action = $request->query->get('action');
+        $from = $request->query->get('from');
+
+        switch ($action) {
+            case 'join':
+                $user->setProgSuivi($programme);
+                break;
+
+            case 'drop':
+                $user->setProgSuivi(null);
+                break;  
+                   
+        }
+
+        $entityManager->flush();
+
+        switch ($from) {
+            case 'show':
+                return $this->redirectToRoute('app_programme_show', [
+                    'id' => $programme->getId()
+                ]); 
+
+            case 'index':
+                return $this->redirectToRoute('app_programme_index');
+                   
+        }
+               
+    }
+
+
+
+    #[Route('/{id}/favorites', name: 'app_programme_enFavoris', methods: ['GET','POST'])]
+    public function enFavori(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $action = $request->query->get('action');
+        $from = $request->query->get('from');
+
+        switch ($action) {
+            case 'add':
+                $programme->addEstFavori($user);
+                break;
+
+            case 'remove':
+                $programme->removeEstFavori($user);
+                break;  
+                   
+        }
+
+        $entityManager->persist($programme);
+        $entityManager->flush();
+
+        switch ($from) {
+            case 'show':
+                return $this->redirectToRoute('app_programme_show', [
+                    'id' => $programme->getId()
+                ]);
+
+            case 'index':
+                return $this->redirectToRoute('app_programme_index');
+                   
+        }
+        
+    }
+    
+    
 
     #[Route('/{id}', name: 'app_programme_show', methods: ['GET'])]
     public function show(Programme $programme): Response
     {
+        $user = $this->getUser();
+        
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
         return $this->render('programme/show.html.twig', [
             'programme' => $programme,
-        ]);
+        ]);        
     }
 
     #[Route('/{id}/edit', name: 'app_programme_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+        $seanceType = $programme->getSeanceTypes();
+        
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        if (!$user->isCoach()) {
+            return $this->redirectToRoute('app_programme_show', [
+                'id' => $programme->getId()
+            ]);
+        }
+
+        if ($user != $programme->getCreateur()) {
+            return $this->redirectToRoute('app_programme_show', [
+                'id' => $programme->getId()
+            ], Response::HTTP_SEE_OTHER);
+        }
+
         $form = $this->createForm(ProgrammeType::class, $programme);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_programme_show', [
+                'id' => $programme->getId()
+            ]);
         }
 
         return $this->render('programme/edit.html.twig', [
             'programme' => $programme,
             'form' => $form,
-        ]);
+            'seanceType' => $seanceType
+        ]);        
     }
 
-    #[Route('/{id}', name: 'app_programme_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_programme_delete', methods: ['GET','POST'])]
     public function delete(Request $request, Programme $programme, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$programme->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($programme);
-            $entityManager->flush();
+        foreach ($programme->getSeanceTypes() as $seance){
+            $entityManager->remove($seance);
         }
+            
+        $entityManager->remove($programme);
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_programme_index', [], Response::HTTP_SEE_OTHER);
     }

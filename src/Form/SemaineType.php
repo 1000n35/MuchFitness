@@ -13,8 +13,6 @@ class SemaineType extends AbstractType
     {
         $builder
             ->add('dateDebut')
-            ->add('programme')
-            ->add('user')
         ;
     }
 

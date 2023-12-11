@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Accueil{% endblock %}
 
 {% block body %}
 <style>
@@ -31,7 +31,7 @@
         {% else %}
         <div>
             <a href="/programme" class="btn btn-primary btn-lg px-4 gap-3">Voir les programmes</a>
-            <a href="" class="btn btn-primary btn-lg px-4 gap-3">Voir mes suivis</a>
+            <a href="{{ path('app_semaine_index') }}" class="btn btn-primary btn-lg px-4 gap-3">Voir mes suivis</a>
         </div>
         {% endif %}
     </div>

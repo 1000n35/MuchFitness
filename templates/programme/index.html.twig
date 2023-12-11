@@ -1,42 +1,102 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Programme index{% endblock %}
+{% block title %}Programmes{% endblock %}
 
 {% block body %}
-    <h1>Programme index</h1>
+    <h1>Liste des Programmes</h1>
+
+    {% if app.user %}
+        <form>
+            <div>
+                <input placeholder="Rechercher" name="search" value="{{search}}">
+            </div>
+            <div>
+                <label for="type"> Type </label>
+                <select id="type" name="type">
+                    <option {{ type == 0 ? 'selected' }} value="">--</option>
+                    <option {{ type == "puissance" ? 'selected' }} value="puissance">Puissance</option>
+                    <option {{ type == "hypertrophie" ? 'selected' }} value="hypertrophie">Hypertrophie</option>
+                    <option {{ type == "endurance" ? 'selected' }} value="endurance">Endurance</option>
+                </select>
+
+                <input placeholder="Nombre de Jours" name="nbJour" value="{{nbJour}}">
+
+                <label for="dureeMax"> Durée Max </label>
+                <input id="dureeMax" type="time" name="dureeMax" value="{{dureeMax}}" placeholder="Duree Max">
+
+                <input id="favoris" type="checkbox" name="favoris" value="1">
+                <label for="favoris"> Favoris </label>
+
+                {% if app.user.isCoach() %}
+                    <input id="mesprogs" type="checkbox" name="mesprogs" value="1">
+                    <label for="mesprogs"> Mes programmes </label>
+                {% endif %}
+
+                <input type="submit" value="Valider">
+            </div>    
+        </form>
+    {% endif %}
 
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Libelle</th>
                 <th>Description</th>
                 <th>Type</th>
-                <th>actions</th>
+                <th>Jours</th>
+                <th>Créateur</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
         {% for programme in programmes %}
             <tr>
-                <td>{{ programme.id }}</td>
                 <td>{{ programme.libelle }}</td>
                 <td>{{ programme.description }}</td>
                 <td>{{ programme.type }}</td>
+                <td>{{ programme.seanceTypes|length }}</td>
+                <td>{{ programme.createur.username }}</td>
                 <td>
-                    <a href="{{ path('app_programme_show', {'id': programme.id}) }}">show</a>
-                    {% if app.user.getId() == programme.getCreateur().getId()%}
-                    <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">edit</a>
+                    
+                    <a href="{{ path('app_programme_show', {'id': programme.id}) }}">Détails</a>
+                    {% if app.user != null %} <!-- vérifie que user est connecté pour éviter une erreur au chargement -->
+                        
+                        {% if programme.estFavori.contains(app.user) %}
+                            <a href="{{ path('app_programme_enFavoris', {'id': programme.id, 'action': 'remove', 'from': 'index'}) }}">Favoris -</a>
+                        {% else %}
+                            <a href="{{ path('app_programme_enFavoris', {'id': programme.id, 'action': 'add', 'from': 'index'}) }}">Favoris +</a>
+                        {% endif %}
+
+
+                        {% if app.user.getProgSuivi() == programme %}
+                            <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'drop', 'from': 'index'}) }}">Abandonner</a href> 
+                        {% else %}
+                            <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'join', 'from': 'index'}) }}">Suivre</a href>
+                        {% endif %}
+
+
+                        {% if app.user.getId() == programme.getCreateur().getId()%}
+                            <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">Modifier</a>
+                        {% endif %}
+
                     {% endif %}
+                    
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="6">pas encore de programme</td>
             </tr>
         {% endfor %}
         </tbody>
+        
     </table>
-    {% if app.user.isIsCoach() %}
-    <a href="{{ path('app_programme_new') }}">Create new</a>
-    {% endif %}
+ 
+    {% if app.user != null %}
+        {% if app.user.isCoach() %}
+            <a href="{{ path('app_programme_new') }}" class="btn btn-primary btn-lg px-4 gap-3">Créer un programme</a>
+        {% endif %}
+    {% endif %} 
+    
+    
 {% endblock %}

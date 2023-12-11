@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block body %}
+{% for message in app.flashes("success") %}
+    <div class="flash-notice">
+        {{ message }}
+    </div>
+{% endfor %}
+    <div class="container">
+        <h1>Profil de {{ app.user.username }}</h1>
+        <div>
+            <p>Pseudo : {{ user.username }}</p>
+            <p>Nom : {{ app.user.getNom() }}</p>
+            <p>Prénom : {{ app.user.getPrenom() }}</p>
+            <p>Date de Naissance : {{ user.dateNaissance|date('d/m/Y') }}</p>
+            <p>Téléphone : {{ app.user.getTelephone() }}</p>
+
+    {% if user.imageName %}
+        <img style="max-width:20%" src="{{ vich_uploader_asset(user, 'imageFile') }}" alt="Photo de profil de {{ user.username }}">
+    {% else %}
+        <p>Aucune photo de profil disponible.</p>
+    {% endif %}
+    
+        <div>
+        <br>
+            <a href="/user/edit/{{app.user.getId()}}" class="btn btn-primary btn-lg px-4 gap-3">Modifier mes informations</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

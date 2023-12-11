@@ -21,6 +21,60 @@ class ProgrammeRepository extends ServiceEntityRepository
         parent::__construct($registry, Programme::class);
     }
 
+
+
+    public function findByFilters($search, $type, $nbJour, $dureeMax, $favoris, $mesprogs, $userId): array
+    {
+        $queryBuilder =$this->createQueryBuilder('p')
+            ->leftJoin('p.seanceTypes', 's')            // recherche, nb jour, duree max
+            ->leftJoin('s.exercices', 'e')              // recherche
+            ->leftJoin('p.estFavori', 'u')              // favoris
+            ->groupBy('p.id');
+
+        if($search) {
+            // Filtre recherche
+            $queryBuilder->andWhere('p.libelle LIKE :search OR s.libelle LIKE :search OR e.nomExercice LIKE :search')
+                ->setParameter('search', '%'.$search.'%')
+                ->addOrderBy('p.libelle', 'DESC');
+        }
+
+        if ($type) {
+            // Filtre sur le type de programme
+            $queryBuilder->andWhere('p.type = :type')
+                ->setParameter('type', $type);
+        }
+
+        if ($nbJour) {
+            // Filtre sur le nombre de jours (nombre de séances)
+            $queryBuilder->andHaving('COUNT(s) = :nbJour')
+                ->setParameter('nbJour', $nbJour);
+        }
+
+        if ($dureeMax) {
+            // Filtre la duree max des séances d'un programme
+            $queryBuilder->andHaving('MAX(s.duree) <= :dureeMax')
+                ->setParameter('dureeMax', $dureeMax);
+        }
+
+        if ($favoris) {
+            // Filtre favoris
+            $queryBuilder->andWhere(':userId MEMBER OF p.estFavori');
+            $queryBuilder->setParameter('userId', $userId);
+        }
+
+        if ($mesprogs) {
+            // Filtre mes programmes
+            $queryBuilder->andWhere('p.createur = :userId');
+            $queryBuilder->setParameter('userId', $userId);
+        }
+    
+        
+        return $queryBuilder->getQuery()->getResult();
+
+    }
+
+    
+
 //    /**
 //     * @return Programme[] Returns an array of Programme objects
 //     */

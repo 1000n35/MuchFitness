@@ -1,17 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}SeanceType index{% endblock %}
+{% block title %}Séances Type{% endblock %}
 
 {% block body %}
-    <h1>SeanceType index</h1>
+    <h1>Séances Type</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Jour</th>
                 <th>Libelle</th>
                 <th>Split</th>
+                <th>Jour</th>
                 <th>Descriptif</th>
                 <th>Duree</th>
                 <th>actions</th>
@@ -20,12 +19,11 @@
         <tbody>
         {% for seance_type in seance_types %}
             <tr>
-                <td>{{ seance_type.id }}</td>
-                <td>{{ seance_type.jour }}</td>
                 <td>{{ seance_type.libelle }}</td>
                 <td>{{ seance_type.split }}</td>
+                <td>{{ seance_type.jour }}</td>
                 <td>{{ seance_type.descriptif }}</td>
-                <td>{{ seance_type.duree ? seance_type.duree|date('H:i:s') : '' }}</td>
+                <td>{{ seance_type.duree ? seance_type.duree|date('H:i') : '' }}</td>
                 <td>
                     <a href="{{ path('app_seance_type_show', {'id': seance_type.id}) }}">show</a>
                     <a href="{{ path('app_seance_type_edit', {'id': seance_type.id}) }}">edit</a>
@@ -33,11 +31,11 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="7">no records found</td>
+                <td colspan="6">pas encore de séance type</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_seance_type_new') }}">Create new</a>
+    {#<a href="{{ path('app_seance_type_new') }}">Create new</a>#}
 {% endblock %}

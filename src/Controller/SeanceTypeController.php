@@ -4,14 +4,17 @@ namespace App\Controller;
 
 use App\Entity\SeanceType;
 use App\Form\SeanceTypeType;
+use App\Repository\ExerciceRepository;
+use App\Repository\ProgrammeRepository;
 use App\Repository\SeanceTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/seance/type')]
+#[Route('/seancetype')]
 class SeanceTypeController extends AbstractController
 {
     #[Route('/', name: 'app_seance_type_index', methods: ['GET'])]
@@ -22,21 +25,37 @@ class SeanceTypeController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_seance_type_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new/{programmeid}/{jour}', name: 'app_seance_type_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, $programmeid, $jour, ProgrammeRepository $programmeRepository): Response
     {
+
+        $nv_jour = (int)$jour + 1; 
+        $programme = $programmeRepository->findById($programmeid);
+        $user = $this->getUser();
+        $exercices = $user->getExercices();
+
         $seanceType = new SeanceType();
+        $seanceType->setCreateur($this->getUser());
+        $seanceType->setProgramme($programme[0]);
+        $seanceType->setJour($nv_jour);
         $form = $this->createForm(SeanceTypeType::class, $seanceType);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($seanceType);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_seance_type_index', [], Response::HTTP_SEE_OTHER);
+            return $this->render('exercice/choix.html.twig', [
+                'exercices' => $exercices,
+                'programmeid' => $programmeid,
+                'jour' => $nv_jour,
+                'seancetype' => $seanceType,
+                'seancetypeid' => $seanceType->getId(),
+                'exercicePresents' => []
+            ]);
         }
 
         return $this->render('seance_type/new.html.twig', [
+            'jour' => $nv_jour,
             'seance_type' => $seanceType,
             'form' => $form,
         ]);
@@ -59,7 +78,9 @@ class SeanceTypeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_seance_type_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_seance_type_show', [
+                'id' => $seanceType->getId(),
+            ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('seance_type/edit.html.twig', [
@@ -68,14 +89,15 @@ class SeanceTypeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_seance_type_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_seance_type_delete', methods: ['GET','POST'])]
     public function delete(Request $request, SeanceType $seanceType, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$seanceType->getId(), $request->request->get('_token'))) {
+        $programmeid = $seanceType->getProgramme()->getId();
             $entityManager->remove($seanceType);
             $entityManager->flush();
-        }
 
-        return $this->redirectToRoute('app_seance_type_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_programme_edit', [
+            'id' => $programmeid
+        ], Response::HTTP_SEE_OTHER);
     }
 }

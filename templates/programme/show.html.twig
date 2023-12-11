@@ -1,35 +1,89 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Programme{% endblock %}
+{% block title %}{{ programme.libelle }}{% endblock %}
 
 {% block body %}
-    <h1>Programme</h1>
+    <h1>{{ programme.libelle }}</h1>
 
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ programme.id }}</td>
-            </tr>
-            <tr>
-                <th>Libelle</th>
-                <td>{{ programme.libelle }}</td>
+                <th>Type</th>
+                <td>{{ programme.type }}</td>
             </tr>
             <tr>
                 <th>Description</th>
                 <td>{{ programme.description }}</td>
             </tr>
             <tr>
-                <th>Type</th>
-                <td>{{ programme.type }}</td>
+                <th>Créateur</th>
+                <td>{{ programme.getCreateur().getUsername() }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_programme_index') }}">back to list</a>
-    {% if app.user.getId() == programme.getCreateur().getId()%}
-    <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">edit</a>
-   
-    {{ include('programme/_delete_form.html.twig') }}
-    {% endif %}
+    <h2>Séances</h2>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Libelle</th>
+                    <th>Split</th>
+                    <th>Durée</th>
+                    <th></th>
+                </tr>
+                {% for seanceType in programme.seanceTypes %}
+                    <tr>
+                        <td>{{ seanceType.libelle }}</td>
+                        <td>{{ seanceType.split }}</td>
+                        <td>{{ seanceType.duree|date('H:i') }}</td>
+                        <td>
+                        <a href = "{{ path('app_seance_type_show', {'id': seanceType.id}) }}">Voir en détail</a href>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">aucune séance</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    <div>
+        {#suivre programme#}
+        {% if app.user.getProgSuivi() == programme %}
+            <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'drop', 'from': 'show'}) }}" class="btn btn-primary btn-lg px-4 gap-3">Abandonner ce programme</a href> 
+        {% else %}
+            <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'join', 'from': 'show'}) }}" class="btn btn-primary btn-lg px-4 gap-3">Suivre ce programme</a href> 
+        {% endif %}
+
+
+        {#mettre en favoris#}
+        {% if programme.estFavori.contains(app.user) %}
+            <a href="{{ path('app_programme_enFavoris', {'id': programme.id, 'action': 'remove', 'from': 'show'}) }}" class="btn btn-primary btn-lg px-4 gap-3">Enlever des favoris</a>
+        {% else %}
+            <a href="{{ path('app_programme_enFavoris', {'id': programme.id, 'action': 'add', 'from': 'show'}) }}" class="btn btn-primary btn-lg px-4 gap-3">Ajouter aux favoris</a>
+        {% endif %}
+
+
+        {#contacter le coach#}
+        {% if app.user.progSuivi == programme %}
+            {% if app.user != programme.createur %}
+                {% if app.user.coach == false %}
+                    <a href="/contact/{{ app.user.getId() }}" class="btn btn-primary btn-lg px-4 gap-3">Contacter le coach</a>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+
+        {% if app.user.id == programme.createur.id %}
+            <a href="{{ path('app_programme_edit', {'id': programme.id}) }}" class="btn btn-primary btn-lg px-4 gap-3">Modifier</a>
+            {{ include('programme/_delete_form.html.twig') }}
+        {% endif %}
+    </div>
+
+    <div>
+        <a href="{{ path('app_programme_index') }}">Retour à la liste</a>
+    </div>
+
 {% endblock %}
