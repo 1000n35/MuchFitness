@@ -119,6 +119,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface,Serializ
         $this->seanceTypes = new ArrayCollection();
         $this->exercices = new ArrayCollection();
         $this->progFavoris = new ArrayCollection();
+        $this->coach = false;
     }
 
     public function getId(): ?int
