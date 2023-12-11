@@ -5,9 +5,9 @@
 {% block body %}
     <h1>Modifier mes résultats</h1>
 
-    {{ include('suivi_seance/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('suivi_seance/_form.html.twig', {'button_label': 'Valider'}) }}
 
-    <a href="{{ path('app_suivi_seance_show', {'id': suivi_seance.id, 'semaineId': semaine.id}) }}">annuler</a>
+    <a href="{{ path('app_suivi_seance_show', {'id': suivi_seance.id, 'semaineId': semaine.id}) }}">Annuler</a>
 
     {{ include('suivi_seance/_delete_form.html.twig', {'semaineId': semaine.id}) }}
 {% endblock %}

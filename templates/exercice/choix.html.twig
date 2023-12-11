@@ -3,15 +3,14 @@
 {% block title %}Choix création/utilisation existants{% endblock %}
 
 {% block body %}
-    <h2>Vos exercices disponibles à l'ajout</h2>
+    <h2>Exercices disponibles à l'ajout</h2>
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>NomExercice</th>
+                <th>Nom</th>
                 <th>Descriptif</th>
                 <th>Video</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -32,15 +31,14 @@
         {% endfor %}
         </tbody>
     </table>
-    <h2>Vos exercices déjà dans la séance</h2>
+    <h2>Exercices déjà dans la séance</h2>
     <table class="table">
         <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>NomExercice</th>
+                    <th>Nom</th>
                     <th>Descriptif</th>
                     <th>Video</th>
-                    <th>actions</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,8 +57,8 @@
 
             </tbody>
         </table>
-    <a href="{{ path('app_exercice_creer_exo', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid}) }}">Créer un exercice pour ce programme</a>
+    <a href="{{ path('app_exercice_creer_exo', {'programmeid': programmeid, 'jour': jour, 'seancetypeid': seancetypeid}) }}">Créer un exercice pour cette séance</a>
 
-    <a href="{{ path('app_seance_type_new', {'programmeid': programmeid, 'jour': jour}) }}">Finir la séance Type</a>
+    <a href="{{ path('app_seance_type_new', {'programmeid': programmeid, 'jour': jour}) }}">Valider la séance</a>
 
     {% endblock %}

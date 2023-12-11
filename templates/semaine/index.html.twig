@@ -11,7 +11,7 @@
                 <th>Date</th>
                 <th>Nombre de jours</th>
                 <th>Programme</th>
-                <th>actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -36,8 +36,8 @@
                         <td>{{ semaine.programme.seanceTypes|length }}</td>
                         <td>{{ semaine.programme.libelle }}</td>
                         <td>
-                            <a href="{{ path('app_semaine_show', {'id': semaine.id}) }}">show</a>
-                            <a href="{{ path('app_semaine_edit', {'id': semaine.id}) }}">edit</a>
+                            <a href="{{ path('app_semaine_show', {'id': semaine.id}) }}">Voir</a>
+                            <a href="{{ path('app_semaine_edit', {'id': semaine.id}) }}">Modifier</a>
                         </td>
                     </tr>
                 {% endfor %}

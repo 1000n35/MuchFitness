@@ -18,9 +18,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_semaine_show', {'id': semaine.id}) }}">retour au suivi</a>
+    <a href="{{ path('app_semaine_show', {'id': semaine.id}) }}">Retour au suivi</a>
 
-    <a href="{{ path('app_objectif_seance_edit', {'id': objectif_seance.id, 'semaineId': semaine.id}) }}">modifier</a>
+    <a href="{{ path('app_objectif_seance_edit', {'id': objectif_seance.id, 'semaineId': semaine.id}) }}">Modifier</a>
 
     {{ include('objectif_seance/_delete_form.html.twig', {'semaineId': semaine.id}) }}
 {% endblock %}

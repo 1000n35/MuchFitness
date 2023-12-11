@@ -1,18 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Exercice index{% endblock %}
+{% block title %}Mes Exercices{% endblock %}
 
 {% block body %}
-    <h1>Exercice index</h1>
+    <h1>Mes Exercices</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>NomExercice</th>
+                <th>Nom</th>
                 <th>Descriptif</th>
                 <th>Video</th>
-                <th>actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -23,20 +22,20 @@
                 <td>{{ exercice.descriptif }}</td>
                 <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
                 <td>
-                    <a href="{{ path('app_exercice_show', {'id': exercice.id, 'seancetypeid': '-1'}) }}">show</a>
+                    <a href="{{ path('app_exercice_show', {'id': exercice.id, 'seancetypeid': '-1'}) }}">Détail</a>
                     {% if app.user.getId() == exercice.getCreateur().getId()%}
-                    <a href="{{ path('app_exercice_edit', {'id': exercice.id}) }}">edit</a>
+                        <a href="{{ path('app_exercice_edit', {'id': exercice.id}) }}">Modifier</a>
                     {% endif %}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="4">pas encore d'exercice</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     {% if app.user.isCoach() %}
-    <a href="{{ path('app_exercice_new') }}">Create new</a>
+    <a href="{{ path('app_exercice_new') }}" class="btn btn-primary btn-lg px-4 gap-3">Créer un exercice</a>
     {% endif %}
 {% endblock %}

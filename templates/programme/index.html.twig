@@ -45,7 +45,7 @@
                 <th>Type</th>
                 <th>Jours</th>
                 <th>Créateur</th>
-                <th>actions</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -58,25 +58,25 @@
                 <td>{{ programme.createur.username }}</td>
                 <td>
                     
-                    <a href="{{ path('app_programme_show', {'id': programme.id}) }}">détails</a>
+                    <a href="{{ path('app_programme_show', {'id': programme.id}) }}">Détails</a>
                     {% if app.user != null %} <!-- vérifie que user est connecté pour éviter une erreur au chargement -->
                         
-                        {% if app.user.getProgSuivi() == programme %}
-                            <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'drop', 'from': 'index'}) }}">abandonner</a href> 
+                        {% if programme.estFavori.contains(app.user) %}
+                            <a href="{{ path('app_programme_enFavoris', {'id': programme.id, 'action': 'remove', 'from': 'index'}) }}">Favoris -</a>
                         {% else %}
-                            <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'join', 'from': 'index'}) }}">suivre</a href>
+                            <a href="{{ path('app_programme_enFavoris', {'id': programme.id, 'action': 'add', 'from': 'index'}) }}">Favoris +</a>
                         {% endif %}
 
 
-                        {% if programme.estFavori.contains(app.user) %}
-                            <a href="{{ path('app_programme_enFavoris', {'id': programme.id, 'action': 'remove', 'from': 'index'}) }}">- favoris</a>
+                        {% if app.user.getProgSuivi() == programme %}
+                            <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'drop', 'from': 'index'}) }}">Abandonner</a href> 
                         {% else %}
-                            <a href="{{ path('app_programme_enFavoris', {'id': programme.id, 'action': 'add', 'from': 'index'}) }}">+ favoris</a>
+                            <a href = "{{ path('app_programme_suivreProgramme', {'id': programme.id, 'action': 'join', 'from': 'index'}) }}">Suivre</a href>
                         {% endif %}
 
 
                         {% if app.user.getId() == programme.getCreateur().getId()%}
-                            <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">modifier</a>
+                            <a href="{{ path('app_programme_edit', {'id': programme.id}) }}">Modifier</a>
                         {% endif %}
 
                     {% endif %}
@@ -94,7 +94,7 @@
  
     {% if app.user != null %}
         {% if app.user.isCoach() %}
-            <a href="{{ path('app_programme_new') }}" class="btn btn-primary btn-lg px-4 gap-3">Creer un programme</a>
+            <a href="{{ path('app_programme_new') }}" class="btn btn-primary btn-lg px-4 gap-3">Créer un programme</a>
         {% endif %}
     {% endif %} 
     

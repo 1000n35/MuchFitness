@@ -1,20 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Exercice{% endblock %}
+{% block title %}{{ exercice.nomExercice }}{% endblock %}
 
 {% block body %}
-    <h1>Exercice</h1>
+    <h1>{{ exercice.nomExercice }}</h1>
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ exercice.id }}</td>
-            </tr>
-            <tr>
-                <th>NomExercice</th>
-                <td>{{ exercice.nomExercice }}</td>
-            </tr>
             <tr>
                 <th>Descriptif</th>
                 <td>{{ exercice.descriptif }}</td>
@@ -25,12 +17,12 @@
             </tr>
         </tbody>
     </table>
-    {% if 'seancetypeid' == '-1' %}
-    <a href = "{{ path('app_seance_type_show', {'id': seancetypeid}) }}">Retour à la séance</a href>
-    {% endif %}
-    {% if app.user.getId() == exercice.getCreateur().getId()%}
-    <a href="{{ path('app_exercice_edit', {'id': exercice.id}) }}">edit</a>
 
-    {{ include('exercice/_delete_form.html.twig') }}
+    {% if app.user.getId() == exercice.getCreateur().getId()%}
+        <a href="{{ path('app_exercice_edit', {'id': exercice.id}) }}">Modifier</a>
+
+        {{ include('exercice/_delete_form.html.twig') }}
     {% endif %}
+
+    <a href = "{{ path('app_seance_type_show', {'id': seancetypeid}) }}">Retour à la séance</a href>
 {% endblock %}

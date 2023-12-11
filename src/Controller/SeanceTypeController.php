@@ -78,7 +78,9 @@ class SeanceTypeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_seance_type_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_seance_type_show', [
+                'id' => $seanceType->getId(),
+            ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('seance_type/edit.html.twig', [

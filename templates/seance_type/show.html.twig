@@ -1,27 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}SeanceType{% endblock %}
+{% block title %}{{ seance_type.libelle }}{% endblock %}
 
 {% block body %}
-    <h1>SeanceType</h1>
+    <h1>{{ seance_type.libelle }}</h1>
 
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ seance_type.id }}</td>
+                <th>Split</th>
+                <td>{{ seance_type.split }}</td>
             </tr>
             <tr>
                 <th>Jour</th>
                 <td>{{ seance_type.jour }}</td>
-            </tr>
-            <tr>
-                <th>Libelle</th>
-                <td>{{ seance_type.libelle }}</td>
-            </tr>
-            <tr>
-                <th>Split</th>
-                <td>{{ seance_type.split }}</td>
             </tr>
             <tr>
                 <th>Descriptif</th>
@@ -29,29 +21,31 @@
             </tr>
             <tr>
                 <th>Duree</th>
-                <td>{{ seance_type.duree ? seance_type.duree|date('H:i:s') : '' }}</td>
+                <td>{{ seance_type.duree ? seance_type.duree|date('H:i') : '' }}</td>
             </tr>
         </tbody>
     </table>
 
 
-    <h2>Exercices de la séance</h2>
+    <h2>Exercices</h2>
         <table class="table">
             <tbody>
                 <tr>
-                    <th>Nom de l'exercice</th>
-                    <th>Descriptif</th>
+                    <th>Nom</th>
                     <th>Video</th>
-                    <th>Actions</th>
+                    <th></th>
                 </tr>
                 {% for exercice in seance_type.exercices %}
                     <tr>
                         <td>{{ exercice.nomExercice }}</td>
-                        <td>{{ exercice.descriptif }}</td>
                         <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
                         <td>
-                        <a href = "{{ path('app_exercice_show', {'id': exercice.id, 'seancetypeid' : seance_type.id}) }}">Détail de l'exerice</a href>
+                        <a href = "{{ path('app_exercice_show', {'id': exercice.id, 'seancetypeid' : seance_type.id}) }}">Voir en détail</a href>
                         </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">aucun exercice</td>
                     </tr>
                 {% endfor %}
 

@@ -1,23 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Programme{% endblock %}
+{% block title %}{{ programme.libelle }}{% endblock %}
 
 {% block body %}
-    <h1>Programme</h1>
+    <h1>{{ programme.libelle }}</h1>
 
     <table class="table">
         <tbody>
             <tr>
-                <th>Libelle</th>
-                <td>{{ programme.libelle }}</td>
+                <th>Type</th>
+                <td>{{ programme.type }}</td>
             </tr>
             <tr>
                 <th>Description</th>
                 <td>{{ programme.description }}</td>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <td>{{ programme.type }}</td>
             </tr>
             <tr>
                 <th>Créateur</th>
@@ -32,19 +28,21 @@
                 <tr>
                     <th>Libelle</th>
                     <th>Split</th>
-                    <th>Descriptif</th>
-                    <th>Durée de la séance</th>
-                    <th>Actions</th>
+                    <th>Durée</th>
+                    <th></th>
                 </tr>
                 {% for seanceType in programme.seanceTypes %}
                     <tr>
                         <td>{{ seanceType.libelle }}</td>
                         <td>{{ seanceType.split }}</td>
-                        <td>{{ seanceType.descriptif }}</td>
-                        <td>{{ seanceType.duree|date('H:i:s') }}</td>
+                        <td>{{ seanceType.duree|date('H:i') }}</td>
                         <td>
-                        <a href = "{{ path('app_seance_type_show', {'id': seanceType.id}) }}">Détail de la séance</a href>
+                        <a href = "{{ path('app_seance_type_show', {'id': seanceType.id}) }}">Voir en détail</a href>
                         </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">aucune séance</td>
                     </tr>
                 {% endfor %}
 
@@ -83,7 +81,7 @@
     </div>
 
     <div>
-        <a href="{{ path('app_programme_index') }}">retour à la liste</a>
+        <a href="{{ path('app_programme_index') }}">Retour à la liste</a>
     </div>
 
 {% endblock %}
