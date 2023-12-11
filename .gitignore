@@ -10,6 +10,7 @@
 /var/
 /vendor/
 /migrations/
+/public/upload/
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###

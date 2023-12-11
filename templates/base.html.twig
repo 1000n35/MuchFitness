@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Hello World!{% endblock %}</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    {#<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">#}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
     {% block stylesheets %}
-        {{ encore_entry_link_tags('app') }}
+      {{ encore_entry_link_tags('app') }}
     {% endblock %}
 
     {% block javascripts %}
-        {{ encore_entry_script_tags('app') }}
+      {{ encore_entry_script_tags('app') }}
     {% endblock %}
     <style>
         body {
-            background-color: lightgray;
+            background-color: light;
         }
 
         header {
@@ -87,11 +89,9 @@
         .dropdown2:hover .dropdown2-content {
             display: block;
         }
-
         .fa-caret-down:before {
             content: "\f0d7"
         }
-
         .fa {
             display: inline-block;
             font: normal normal normal 14px/1 FontAwesome;
@@ -131,8 +131,23 @@
                     </div>
                 </div>
             {% endif %}
+            <div class="form-check form-switch mx-4">
+            <input 
+                class="form-check-input p-2"
+                type="checkbox"
+                role="switch"
+                id="flexSwitchCheckChecked"
+                checked 
+                onclick="myfunction()">
+            </div>
         </nav>
     </header>
+    <script>
+        function myfunction(){
+            var element=document.body;
+            element.dataset.bsTheme = element.dataset.bsTheme == "light" ? "dark" : "light";
+        }
+    </script>
     {% block body %}
     {% endblock %}
 </body>
