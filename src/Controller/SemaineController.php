@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use function PHPUnit\Framework\isEmpty;
+
 #[Route('/semaine')]
 class SemaineController extends AbstractController
 {
@@ -48,10 +50,14 @@ class SemaineController extends AbstractController
         }
 
         $dateNow = new \DateTime();
-        $lastSemaine = $semaineRepository->findByUser($user)[0];
 
-        if($dateNow < $lastSemaine->getDateDebut()->modify('+' . count($lastSemaine->getProgramme()->getSeanceTypes()) . 'days')) {
-            return $this->redirectToRoute('app_semaine_index', [], Response::HTTP_SEE_OTHER);
+
+        $semaineListe = $semaineRepository->findByUser($user);
+        if(!isEmpty($semaineListe)) {
+            $lastSemaine = $semaineListe[0];
+            if($dateNow < $lastSemaine->getDateDebut()->modify('+' . count($lastSemaine->getProgramme()->getSeanceTypes()) . 'days')) {
+                return $this->redirectToRoute('app_semaine_index', [], Response::HTTP_SEE_OTHER);
+            }
         }
 
         $semaine->setProgramme($user->getProgSuivi());

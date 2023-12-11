@@ -19,8 +19,9 @@ class ContactController extends AbstractController
     public function index(Request $request, PersistenceManagerRegistry $doctrine): Response
     {
         $contact = new Contact();
+        $user = $this->getUser();
 
-        if (!$user) {
+        if(!$user) {
             return $this->redirectToRoute('app_login');
         }
         
