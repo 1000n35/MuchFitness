@@ -55,6 +55,7 @@ class SuiviSeanceController extends AbstractController
             'suivi_seance' => $suiviSeance,
             'form' => $form,
             'semaine' => $semaine,
+            'seance' => $seance,
         ]);
     }
 
@@ -69,6 +70,14 @@ class SuiviSeanceController extends AbstractController
 
         $semaine = $semaineRepository->findById($semaineId)[0];
 
+        $seanceFound = null;
+        foreach ($semaine->getProgramme()->getSeanceTypes() as $seance) {
+            if ($seance->getJour() == $suiviSeance->getJourSeance()) {
+                $seanceFound = $seance;
+                break;
+            }
+        }
+
         if ($user != $semaine->getUser() || $semaine != $suiviSeance->getSemaine()) {
             return $this->redirectToRoute('app_semaine_show', [
                 'id' => $semaineId,
@@ -78,6 +87,7 @@ class SuiviSeanceController extends AbstractController
         return $this->render('suivi_seance/show.html.twig', [
             'suivi_seance' => $suiviSeance,
             'semaine' => $semaine,
+            'seance' => $seanceFound,
         ]);
     }
 
@@ -91,6 +101,14 @@ class SuiviSeanceController extends AbstractController
         }
 
         $semaine = $semaineRepository->findById($semaineId)[0];
+
+        $seanceFound = null;
+        foreach ($semaine->getProgramme()->getSeanceTypes() as $seance) {
+            if ($seance->getJour() == $suiviSeance->getJourSeance()) {
+                $seanceFound = $seance;
+                break;
+            }
+        }
 
         if ($user != $semaine->getUser() || $semaine != $suiviSeance->getSemaine()) {
             return $this->redirectToRoute('app_suivi_seance_show', [
@@ -115,6 +133,7 @@ class SuiviSeanceController extends AbstractController
             'suivi_seance' => $suiviSeance,
             'form' => $form,
             'semaine' => $semaine,
+            'seance' => $seanceFound,
         ]);
     }
 

@@ -67,14 +67,16 @@
 
 
         {#contacter le coach#}
-        {% if app.user.getProgSuivi() == programme %}
-            {% if app.user.getId() != programme.getCreateur().getId() %}
-                <a href="/contact/{{ app.user.getId() }}" class="btn btn-primary btn-lg px-4 gap-3">Contacter le coach</a>
+        {% if app.user.progSuivi == programme %}
+            {% if app.user != programme.createur %}
+                {% if app.user.coach == false %}
+                    <a href="/contact/{{ app.user.getId() }}" class="btn btn-primary btn-lg px-4 gap-3">Contacter le coach</a>
+                {% endif %}
             {% endif %}
         {% endif %}
 
 
-        {% if app.user.getId() == programme.getCreateur().getId()%}
+        {% if app.user.id == programme.createur.id %}
             <a href="{{ path('app_programme_edit', {'id': programme.id}) }}" class="btn btn-primary btn-lg px-4 gap-3">Modifier</a>
             {{ include('programme/_delete_form.html.twig') }}
         {% endif %}

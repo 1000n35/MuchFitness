@@ -8,4 +8,32 @@
     {{ include('suivi_seance/_form.html.twig') }}
 
     <a href="{{ path('app_semaine_show', {'id': semaine.id}) }}">Annuler</a>
+
+    <h2>Exercices</h2>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Nom</th>
+                    <th>Descriptif</th>
+                    <th>Video</th>
+                    <th></th>
+                </tr>
+                {% for exercice in seance.exercices %}
+                    <tr>
+                        <td>{{ exercice.nomExercice }}</td>
+                        <td>{{ exercice.descriptif }}</td>
+                        <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>
+                        <td>
+                            <a href = "{{ path('app_exercice_show', {'id': exercice.id, 'seancetypeid' : seance.id}) }}">Voir en détail</a href>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">aucun exercice</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
 {% endblock %}

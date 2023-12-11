@@ -20,11 +20,13 @@ class ContactController extends AbstractController
     {
         $contact = new Contact();
 
-        if($this->getUser()) {
-            $contact->setNom($this->getUser()->getNom());
-            $contact->setPrenom($this->getUser()->getPrenom());
-            $contact->setEmail("admin@gmail.com");
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
         }
+        
+        $contact->setNom($this->getUser()->getNom());
+        $contact->setPrenom($this->getUser()->getPrenom());
+        $contact->setEmail("admin@gmail.com");
 
         $form = $this->createForm(ContactType::class, $contact);
         $form->handleRequest($request);
@@ -52,11 +54,17 @@ class ContactController extends AbstractController
         $contact = new Contact();
         $user = $security->getUser();
 
-        if($this->getUser()) {
-            $contact->setNom($user->getNom());
-            $contact->setPrenom($user->getPrenom());
-            $contact->setEmail($programme->getCreateur()->getEmail());
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
         }
+
+        if ($user->isCoach()) {
+            return $this->redirectToRoute('home');
+        }
+
+        $contact->setNom($user->getNom());
+        $contact->setPrenom($user->getPrenom());
+        $contact->setEmail($programme->getCreateur()->getEmail());
 
         $form = $this->createForm(ContactType::class, $contact);
         $form->handleRequest($request);

@@ -17,7 +17,6 @@
         <tbody>
         {% for exercice in exercices %}
             <tr>
-                <td>{{ exercice.id }}</td>
                 <td>{{ exercice.nomExercice }}</td>
                 <td>{{ exercice.descriptif }}</td>
                 <td><a href="{{ asset('uploads/video/' ~ exercice.videoFilename) }}">Voir la vidéo</a></td>

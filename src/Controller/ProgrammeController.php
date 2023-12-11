@@ -59,7 +59,6 @@ class ProgrammeController extends AbstractController
             return $this->redirectToRoute('app_programme_index');
         }
 
-
         // Assigner l'ID de l'utilisateur connecté à createurId
         $programme->setCreateur($user);
 
